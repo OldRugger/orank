@@ -6,7 +6,11 @@ AllCops:
     - bin/setup
     - test/*
     - config/application.rb
+    - config/initializers/app_config.rb
+    - spec/spec_helper.rb
 
 Metrics/LineLength:
   Max: 99
 
+Style/EmptyMethod:
+  EnforcedStyle: expanded
