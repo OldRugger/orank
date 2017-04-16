@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  course: MyString
+  cgv: 1.5
+  score: MyString
+  races: 1
+  calc_run_id: 
+  runner_id: 
+
+two:
+  course: MyString
+  cgv: 1.5
+  score: MyString
+  races: 1
+  calc_run_id: 
+  runner_id: 
