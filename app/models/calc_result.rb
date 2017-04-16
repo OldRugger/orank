@@ -1,3 +1,4 @@
+# Calc run output - this model contains the runners calculated score.
 class CalcResult < ActiveRecord::Base
   belongs_to :results
   belongs_to :meet

@@ -1,0 +1,12 @@
+AllCops:
+  Excludes:
+    - db/migrate/*.rb
+    - db/schema.rb
+    - db/seeds.rb
+    - bin/setup
+    - test/*
+    - config/application.rb
+
+Metrics/LineLength:
+  Max: 99
+
