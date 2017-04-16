@@ -14,88 +14,80 @@
 ActiveRecord::Schema.define(version: 20170409204831) do
 
   create_table "calc_results", force: :cascade do |t|
-    t.float    "float_time",  limit: 24
-    t.float    "score",       limit: 24
-    t.float    "course_cgv",  limit: 24
-    t.integer  "result_id",   limit: 4
-    t.integer  "meet_id",     limit: 4
-    t.integer  "calc_run_id", limit: 4
-    t.integer  "runner_id",   limit: 4
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.float    "float_time"
+    t.float    "score"
+    t.float    "course_cgv"
+    t.integer  "result_id"
+    t.integer  "meet_id"
+    t.integer  "calc_run_id"
+    t.integer  "runner_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
-  add_index "calc_results", ["calc_run_id"], name: "index_calc_results_on_calc_run_id", using: :btree
-  add_index "calc_results", ["meet_id"], name: "index_calc_results_on_meet_id", using: :btree
-  add_index "calc_results", ["result_id"], name: "index_calc_results_on_result_id", using: :btree
-  add_index "calc_results", ["runner_id"], name: "index_calc_results_on_runner_id", using: :btree
+  add_index "calc_results", ["calc_run_id"], name: "index_calc_results_on_calc_run_id"
+  add_index "calc_results", ["meet_id"], name: "index_calc_results_on_meet_id"
+  add_index "calc_results", ["result_id"], name: "index_calc_results_on_result_id"
+  add_index "calc_results", ["runner_id"], name: "index_calc_results_on_runner_id"
 
   create_table "calc_runs", force: :cascade do |t|
     t.date     "date"
-    t.integer  "publish",    limit: 4
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.integer  "publish"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "meets", force: :cascade do |t|
-    t.string   "name",       limit: 255
+    t.string   "name"
     t.date     "date"
-    t.string   "input_file", limit: 255
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.string   "input_file"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "results", force: :cascade do |t|
-    t.float    "fload_time", limit: 24
-    t.string   "class",      limit: 255
-    t.integer  "length",     limit: 4
-    t.integer  "climb",      limit: 4
-    t.integer  "controls",   limit: 4
-    t.string   "club",       limit: 255
-    t.integer  "club_id",    limit: 4
-    t.integer  "place",      limit: 4
-    t.string   "error",      limit: 255
+    t.float    "fload_time"
+    t.string   "class"
+    t.integer  "length"
+    t.integer  "climb"
+    t.integer  "controls"
+    t.string   "club"
+    t.integer  "club_id"
+    t.integer  "place"
+    t.string   "error"
     t.boolean  "include"
-    t.integer  "meet_id",    limit: 4
-    t.integer  "runner_id",  limit: 4
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.integer  "meet_id"
+    t.integer  "runner_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  add_index "results", ["meet_id"], name: "index_results_on_meet_id", using: :btree
-  add_index "results", ["runner_id"], name: "index_results_on_runner_id", using: :btree
+  add_index "results", ["meet_id"], name: "index_results_on_meet_id"
+  add_index "results", ["runner_id"], name: "index_results_on_runner_id"
 
   create_table "runner_gvs", force: :cascade do |t|
-    t.string   "course",      limit: 255
-    t.float    "cgv",         limit: 24
-    t.string   "score",       limit: 255
-    t.integer  "races",       limit: 4
-    t.integer  "calc_run_id", limit: 4
-    t.integer  "runner_id",   limit: 4
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.string   "course"
+    t.float    "cgv"
+    t.string   "score"
+    t.integer  "races"
+    t.integer  "calc_run_id"
+    t.integer  "runner_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
-  add_index "runner_gvs", ["calc_run_id"], name: "index_runner_gvs_on_calc_run_id", using: :btree
-  add_index "runner_gvs", ["runner_id"], name: "index_runner_gvs_on_runner_id", using: :btree
+  add_index "runner_gvs", ["calc_run_id"], name: "index_runner_gvs_on_calc_run_id"
+  add_index "runner_gvs", ["runner_id"], name: "index_runner_gvs_on_runner_id"
 
   create_table "runners", force: :cascade do |t|
-    t.string   "surname",    limit: 255
-    t.string   "firstname",  limit: 255
-    t.string   "sex",        limit: 255
-    t.integer  "club_id",    limit: 4
-    t.string   "club",       limit: 255
-    t.integer  "card_id",    limit: 4
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.string   "surname"
+    t.string   "firstname"
+    t.string   "sex"
+    t.integer  "club_id"
+    t.string   "club"
+    t.integer  "card_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "calc_results", "calc_runs"
-  add_foreign_key "calc_results", "meets"
-  add_foreign_key "calc_results", "results"
-  add_foreign_key "calc_results", "runners"
-  add_foreign_key "results", "meets"
-  add_foreign_key "results", "runners"
-  add_foreign_key "runner_gvs", "calc_runs"
-  add_foreign_key "runner_gvs", "runners"
 end
