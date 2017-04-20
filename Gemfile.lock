@@ -46,11 +46,17 @@ GEM
       thread_safe (~> 0.3, >= 0.3.1)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
+    bootstrap-datepicker-rails (1.6.4.1)
+      railties (>= 3.0)
     brakeman (3.6.1)
     builder (3.2.3)
     bullet (5.5.1)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.10.0)
+    carrierwave (1.0.0)
+      activemodel (>= 4.0.0)
+      activesupport (>= 4.0.0)
+      mime-types (>= 1.16)
     codeclimate-engine-rb (0.4.0)
       virtus (~> 1.0)
     coderay (1.1.1)
@@ -238,8 +244,10 @@ PLATFORMS
   x86-mingw32
 
 DEPENDENCIES
+  bootstrap-datepicker-rails
   brakeman
   bullet
+  carrierwave
   jquery-rails
   mysql2
   pry-nav
