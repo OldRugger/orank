@@ -14,3 +14,7 @@ Metrics/LineLength:
 
 Style/EmptyMethod:
   EnforcedStyle: expanded
+
+EndOfLine:
+  Enabled: false
+
