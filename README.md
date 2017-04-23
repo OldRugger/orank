@@ -1,5 +1,5 @@
-## Orank - Rewrite of the GAOC ranking ##
-#  
+### Orank - Rewrite of the GAOC ranking ##
+ 
 Algorithm is derived from the OUSA ranking algorithm
 #2 Orank 
 Daily Ranking points earned by competition are calculated as follows: 
@@ -9,4 +9,4 @@ Daily Ranking points earned by competition are calculated as follows:
 * The average Personal Course Difficulty is a harmonic mean, which is the reciprocal of the arithmetic mean of the reciprocals. This causes the results in (a) to converge and results in non-drifting (i.e., significant) results.
 * Daily Ranking scores of zero are excluded from this iterative calculation process.
 
-##$
+
