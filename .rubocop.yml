@@ -18,3 +18,8 @@ Style/EmptyMethod:
 EndOfLine:
   Enabled: false
 
+PercentLiteralDelimiters:
+  Enabled: false
+
+Metrics/MethodLength:
+  Max: 15

@@ -1,6 +1,6 @@
 # Meets controller
 class MeetsController < ApplicationController
-  before_filter :admin_required, only: [:edit, :new]
+  before_filter :admin_required, only: %i(edit new)
   def index
   end
 
@@ -15,11 +15,17 @@ class MeetsController < ApplicationController
   end
 
   def create
-    @meet = Meet.find_or_create_by(input_file: meet_params[:input_file].original_filename)
-    @meet.name = meet_params[:name]
-    @meet.date = meet_params[:date]
-    @meet.save
-    redirect_to controller: 'meets', action: 'show', id: @meet.id
+    meet = create_meet
+    Result.import(meet.id, meet_params[:input_file])
+    redirect_to controller: 'meets', action: 'show', id: meet.id
+  end
+
+  def create_meet
+    meet = Meet.find_or_create_by(original_filename: meet_params[:input_file].original_filename)
+    meet.name = meet_params[:name]
+    meet.date = meet_params[:date]
+    meet.save
+    meet
   end
 
   def meet_params

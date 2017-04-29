@@ -41,20 +41,20 @@ ActiveRecord::Schema.define(version: 20170409204831) do
     t.string   "name"
     t.date     "date"
     t.string   "input_file"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "original_filename"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
   end
 
   create_table "results", force: :cascade do |t|
-    t.float    "fload_time"
-    t.string   "class"
+    t.time     "time"
+    t.float    "float_time"
+    t.string   "course"
     t.integer  "length"
     t.integer  "climb"
     t.integer  "controls"
-    t.string   "club"
-    t.integer  "club_id"
     t.integer  "place"
-    t.string   "error"
+    t.integer  "classifier"
     t.boolean  "include"
     t.integer  "meet_id"
     t.integer  "runner_id"
