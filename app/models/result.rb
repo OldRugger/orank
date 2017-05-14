@@ -68,7 +68,20 @@ class Result < ActiveRecord::Base
   # If a yellow runner also ran an upper lever course, do not include the runnes
   # the yellow results - move them to a sprint course.
   private_class_method def self.split_yellow_runners(meet_id)
-    binding.pry
+    runs = Result.where(meet_id: meet_id).group('runner_id').count
+    runs.each do |i, r|
+      if r > 1
+        next if Result.where(runner_id: i, course: 'White').count > 0
+        set_yellow_result_to_sprint(meet_id, i)
+      end
+    end
   end
   
+  private_class_method def self.set_yellow_result_to_sprint(meet_id, runner_id)
+    result = Result.where(runner_id: runner_id, meet_id: meet_id, course: 'Yellow').first
+    return unless result
+    binding.pry
+    result.course = 'Sprint'
+    result.save
+  end
 end

@@ -8,7 +8,7 @@ class Runner < ActiveRecord::Base
     runner = Runner.where(surname: row['Surname'],
                           firstname: row['First name']).first
     return update_runner(runner, file_type) if runner
-    create_runner(row)
+    create_runner(row, file_type)
   end
   
   private_class_method def self.match_runner_card_id(row, file_type)
@@ -29,14 +29,32 @@ class Runner < ActiveRecord::Base
     runner.save
     runner
   end
+  
+  private_class_method def self.create_runner(row, file_type)
+    if file_type = 'OE0014'
+      return create_runner_oe00014(row)
+    end
+    create_runner_or(row)
+  end
 
-  private_class_method def self.create_runner_oe0014(row)
+  private_class_method def self.create_runner_oe00014(row)
     runner = Runner.new(surname: row['Surname'],
                         firstname: row['First name'],
                         card_id: row['Chipno'],
                         sex: row['S'],
                         club_id: row['Club no.'],
                         club: row['Cl.name'],
+                        club_description: row['City'])
+    logger.info("runner #{runner.firstname} #{runner.surname} added to database")
+    runner.save
+    runner
+  end
+
+  private_class_method def self.create_runner_or(row)
+    runner = Runner.new(surname: row['Surname'],
+                        firstname: row['First name'],
+                        card_id: row[''],
+                        sex: row['S'],
                         club_description: row['City'])
     logger.info("runner #{runner.firstname} #{runner.surname} added to database")
     runner.save
