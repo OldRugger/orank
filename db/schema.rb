@@ -50,6 +50,7 @@ ActiveRecord::Schema.define(version: 20170409204831) do
     t.time     "time"
     t.float    "float_time"
     t.string   "course"
+    t.string   "source_file_type"
     t.integer  "length"
     t.integer  "climb"
     t.integer  "controls"
@@ -58,8 +59,8 @@ ActiveRecord::Schema.define(version: 20170409204831) do
     t.boolean  "include"
     t.integer  "meet_id"
     t.integer  "runner_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
   end
 
   add_index "results", ["meet_id"], name: "index_results_on_meet_id"
@@ -85,9 +86,10 @@ ActiveRecord::Schema.define(version: 20170409204831) do
     t.string   "sex"
     t.integer  "club_id"
     t.string   "club"
+    t.string   "club_description"
     t.integer  "card_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
   end
 
 end

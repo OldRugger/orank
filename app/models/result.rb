@@ -12,12 +12,13 @@ class Result < ActiveRecord::Base
     first = true
     CSV.foreach(file.tempfile.path, headers: true, col_sep: ';') do |row|
       if first == true
-        validate_file_type(row)
+        file_type = validate_file_type(row)
       else
         first = false
       end
-      load_result(meet_id, row)
+      load_result(meet_id, row, file_type)
     end
+    split_yellow_runners(meet_id)
   end
   # note: this is a workaround for a ruby_parser error
   private_class_method :load_results
@@ -26,8 +27,8 @@ class Result < ActiveRecord::Base
     Result.where(meet_id: meet_id).delete_all
   end
 
-  private_class_method def self.load_result(meet_id, row)
-    runner = Runner.get_runner(row)
+  private_class_method def self.load_result(meet_id, row, file_type)
+    runner = Runner.get_runner(row, file_type)
     runner_time = row['Time']
     result = Result.new(meet_id: meet_id,
                         runner_id: runner.id,
@@ -39,21 +40,48 @@ class Result < ActiveRecord::Base
                         controls: row['Course controls'],
                         place: row['Place'],
                         classifier: row['Classifier'],
+                        source_file_type: file_type,
                         include: true)
     result.save
   end
 
   private_class_method def self.validate_file_type(row)
-    raise 'Unsupported file type - not OE0014' unless row.header?('OE0014')
+    return 'OE0014' if row.header?('OE0014')
+    return 'OR' if row.header?('SI card')
+    raise 'Unsupported file type - not OE0014 or OR spits'
   end
 
   private_class_method def self.get_float_time(time)
-    if time.scan(/(?=:)/).count == 2
-      hh, mm, ss = time.split(':')
-    else
-      hh = 0
-      mm, ss = time.split(':')
+    if time
+      if time.scan(/(?=:)/).count == 2
+        hh, mm, ss = time.split(':')
+      else
+        hh = 0
+        mm, ss = time.split(':')
+      end
+      return (hh.to_i * 60) + mm.to_i + (ss.to_i / 60.0)
     end
-    (hh * 60) + mm + (ss / 60.0)
+  else
+    return 0
+  end
+  
+  # If a yellow runner also ran an upper lever course, do not include the runnes
+  # the yellow results - move them to a sprint course.
+  private_class_method def self.split_yellow_runners(meet_id)
+    runs = Result.where(meet_id: meet_id).group('runner_id').count
+    runs.each do |i, r|
+      if r > 1
+        next if Result.where(runner_id: i, course: 'White').count > 0
+        set_yellow_result_to_sprint(meet_id, i)
+      end
+    end
+  end
+  
+  private_class_method def self.set_yellow_result_to_sprint(meet_id, runner_id)
+    result = Result.where(runner_id: runner_id, meet_id: meet_id, course: 'Yellow').first
+    return unless result
+    binding.pry
+    result.course = 'Sprint'
+    result.save
   end
 end
