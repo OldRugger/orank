@@ -6,6 +6,7 @@ class CreateRunners < ActiveRecord::Migration
       t.string :sex
       t.integer :club_id
       t.string :club
+      t.string :club_description
       t.integer :card_id
 
       t.timestamps null: false

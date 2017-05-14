@@ -3,7 +3,6 @@ source 'https://rubygems.org'
 gem 'bootstrap-datepicker-rails'
 gem 'carrierwave'
 gem 'jquery-rails'
-gem 'mysql2'
 gem 'rails', '4.2.7.1'
 gem 'sass-rails', '~> 5.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
