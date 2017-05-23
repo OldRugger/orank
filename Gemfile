@@ -3,10 +3,12 @@ source 'https://rubygems.org'
 gem 'bootstrap-datepicker-rails'
 gem 'carrierwave'
 gem 'jquery-rails'
+gem 'lru_redux'
 gem 'rails', '4.2.7.1'
 gem 'sass-rails', '~> 5.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'sqlite3'
+gem 'sucker_punch'
 gem 'turbolinks'
 gem 'uglifier', '>= 1.3.0'
 

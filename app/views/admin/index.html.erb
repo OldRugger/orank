@@ -1,5 +1,9 @@
-<table>
+s<h1>Administration Page</h1>
+<table class=admin>
 <tr><td>
-  <%= link_to "Add a Meet", meets_new_path %>
-</tr></td>
+  <%= link_to "Add a Meet", new_meet_path %>
+</td></tr>
+<tr><td>
+  <%= link_to "Run Ranking Calculation", calc_runs_path, :method => :post %>
+</td></tr>
 </table>

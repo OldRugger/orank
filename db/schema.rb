@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170409204831) do
+ActiveRecord::Schema.define(version: 20170521201838) do
 
   create_table "calc_results", force: :cascade do |t|
     t.float    "float_time"
@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 20170409204831) do
     t.integer  "runner_id"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.string   "course"
   end
 
   add_index "calc_results", ["calc_run_id"], name: "index_calc_results_on_calc_run_id"
@@ -35,6 +36,7 @@ ActiveRecord::Schema.define(version: 20170409204831) do
     t.integer  "publish"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string   "status"
   end
 
   create_table "meets", force: :cascade do |t|
@@ -61,6 +63,7 @@ ActiveRecord::Schema.define(version: 20170409204831) do
     t.integer  "runner_id"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
+    t.string   "gender"
   end
 
   add_index "results", ["meet_id"], name: "index_results_on_meet_id"
