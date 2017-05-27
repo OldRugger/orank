@@ -2,6 +2,8 @@ class CalculateResults
   include SuckerPunch::Job
   
   def perform(calc_run)
+    Rails.logger.info("*********** Calc run ***************")
+    @calc_run_id = calc_run.id
     # calc_results("Sprint")
     calc_results("Yellow")
     # calc_results("Orange")
@@ -14,18 +16,22 @@ class CalculateResults
   
   def calc_results(course)
     #Process course until average calculation delta drops below 0.5 or we exceed 15 passes
+    Rails.logger.info("Calculate results:  Calc id: #{@calc_run_id} - #{course}")
     init_globals
     delta = 99.5 # init delta to high value.
     pass  = 0
     while (delta > 0.5) do
       pass += 1
-      delta = calc_race_gv(course, false) #false = don't updated database
+      delta = calc_race_gv(course)
       if (pass > 14)
         break
       end
+      Rails.logger.info("--> Pass: #{pass}, delta: #{delta}")
+      puts "--> Pass: #{pass}, delta: #{delta}"
     end
     # final run to update database
-    calc_race_gv(course, true)
+    @update_db = true # update runners
+    calc_race_gv(course)
   end
 
   # initialize global calculation values
@@ -34,10 +40,11 @@ class CalculateResults
     @c_runner_gv = nil
     @c_runner_gv = LruRedux::Cache.new(2000)
     @course_time = nil
+    @update_db   = false
   end
 
   # calculate race / course garliness factor
-  def calc_race_gv(course, update_db)
+  def calc_race_gv(course)
     total_delta = 0.0
     meet_cnt    = 0
     meets       = get_meets
@@ -45,8 +52,9 @@ class CalculateResults
       meet_cnt += 1
       delta = process_course(meet,course)
       next if delta == nil
-      # total_data += delta
-      calc_runner_gv(course)
+      binding.pry
+      total_delta += delta
+      calc_runners_gv(course)
     end
     total_delta / meet_cnt
   end
@@ -60,17 +68,15 @@ class CalculateResults
   def process_course(meet,course)
     # skip any course with fewer that three runners
     return nil if Result.where(meet: meet.id, course: course).count < 3
+    delta = 0.0
     by_gender = get_course_by_gender(meet,course)
     genders   = by_gender ? ['F','M'] : ['A']
     genders.each do |gender|
-      runer_times, score_list = process_course_results(meet.id,course,gender)
+      delta += process_course_results(meet.id,course,gender).abs
     end
+    delta / genders.count
   end
   
-  # calculate runners garliness factor
-  def calc_runner_gv(course)
-    # binding.pry
-  end
 
   # If there are three of each gender, calcs will be by gender.
   def get_course_by_gender(meet,course)
@@ -98,11 +104,36 @@ class CalculateResults
   
   # Update cource resutls based on course calculated garliness valaue
   def update_meet_course_results(meet_id, results, course_cgv, course, runner_times)
+    first_time = true
+    delta      = 1.0
+
     runner_times.each do |runner|
-      time = runner.runner_time
-      runner_score = runner_score = course_cgv/time
-      binding.pry
+      time  = runner.runner_time
+      runner_score = course_cgv/time
+      calc_result = CalcResult.where(calc_run_id: @calc_run_id,
+                                     meet_id: meet_id,
+                                     runner_id: runner.runner_id,
+                                     course: course).first
+      if calc_result == nil
+        puts "calc_result - new #{course} #{runner.runner_id}"
+        calc_result = CalcResult.new(calc_run_id: @calc_run_id,
+                                     meet_id: meet_id,
+                                     runner_id: runner.runner_id,
+                                     course: course,
+                                     float_time: time,
+                                     score: runner_score,
+                                     course_cgv: course_cgv,)
+      else
+        if first_time
+          delta = ((course_cgv - calc_result.course_cgv) / calc_result.course_cgv) * 100
+          first_time = false
+        end
+        calc_result.course_cgv = course_cgv
+        calc_result.score      = runner_score
+      end
+      calc_result.save
     end
+    delta
   end
   
   # get meet/course resutls
@@ -139,6 +170,26 @@ class CalculateResults
     get_harmonic_mean(list)
   end
   
+  # calculate runners garliness factor
+  def calc_runners_gv(course)
+    binding.pry
+    cur_runner_id   = nil
+    score_list    = []
+    CalcResult.where(course: course).order(:id, score: :desc).select("id, score").each do |r|
+      # first entry for runner?
+      if current_runner_id || current_runner_id != r.id
+        update_runners_gv(score_list, r.id)
+        score_list = []
+        current_runner_id = r.id
+      end
+      if r.score > 0
+        score_list << r.score
+      end
+    end
+    # process last runner
+    update_runners_gv(score_list, r.id)
+  end
+
   # calculate hamonic mean for list of values
   def get_harmonic_mean(score_list)
     sum = 0
@@ -147,4 +198,14 @@ class CalculateResults
     end
     mean = score_list.size / sum
   end
+  
+  # calculate and update the runners GV
+  def update_runners_gv(score_list)
+    avg = calc_modified_average(score_list)
+  end
+  
+  def calc_modified_average(score_list)
+    binding.pry
+  end
+  
 end

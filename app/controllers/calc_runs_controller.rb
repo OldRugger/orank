@@ -3,8 +3,8 @@ class CalcRunsController < ApplicationController
     binding.pry
   end
   def create
-    binding.pry
     calc_run = CalcRun.new(status: 'in-process', date: DateTime.now.to_date )
+    calc_run.save
     CalculateResults.new.perform(calc_run)
     
   end

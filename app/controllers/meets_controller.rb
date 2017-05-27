@@ -5,6 +5,14 @@ class MeetsController < ApplicationController
   end
 
   def show
+    @meet = Meet.find(params[:id])
+    courses = ['Red', 'Green', 'Brown', 'Orange', 'Yellow', 'Sprint']
+    @results = {}
+    courses.each do |c|
+      @results[c] = Result.where(meet_id: @meet.id, course: c)
+                    .select("id, runner_id, place, classifier, float_time")
+                    .order(:classifier, :place).all
+    end
   end
 
   def edit

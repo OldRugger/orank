@@ -11,9 +11,9 @@ class Result < ActiveRecord::Base
   def self.load_results(meet_id, file)
     first = true
     CSV.foreach(file.tempfile.path, headers: true, col_sep: ';') do |row|
+      next if row.empty?
       if first == true
         file_type = validate_file_type(row)
-      else
         first = false
       end
       load_result(meet_id, row, file_type)
