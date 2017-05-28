@@ -4,12 +4,12 @@ class CalculateResults
   def perform(calc_run)
     Rails.logger.info("*********** Calc run ***************")
     @calc_run_id = calc_run.id
-    # calc_results("Sprint")
+    calc_results("Sprint")
     calc_results("Yellow")
-    # calc_results("Orange")
-    # calc_results("Green")
-    # calc_results("Brown")
-    # calc_results("Red")
+    calc_results("Orange")
+    calc_results("Green")
+    calc_results("Brown")
+    calc_results("Red")
   end
   
   private
@@ -17,17 +17,16 @@ class CalculateResults
   def calc_results(course)
     #Process course until average calculation delta drops below 0.5 or we exceed 15 passes
     Rails.logger.info("Calculate results:  Calc id: #{@calc_run_id} - #{course}")
-    init_globals
+    init_globals(course)
     delta = 99.5 # init delta to high value.
     pass  = 0
-    while (delta > 0.5) do
+    while (delta > 0.7) do
       pass += 1
       delta = calc_race_gv(course)
       if (pass > 14)
         break
       end
       Rails.logger.info("--> Pass: #{pass}, delta: #{delta}")
-      puts "--> Pass: #{pass}, delta: #{delta}"
     end
     # final run to update database
     @update_db = true # update runners
@@ -35,24 +34,25 @@ class CalculateResults
   end
 
   # initialize global calculation values
-  def init_globals
+  def init_globals(course)
     # clear cache
     @c_runner_gv = nil
     @c_runner_gv = LruRedux::Cache.new(2000)
     @course_time = nil
     @update_db   = false
+    @course      = course
   end
 
   # calculate race / course garliness factor
   def calc_race_gv(course)
+    Rails.logger.info("Process course #{course}")
     total_delta = 0.0
     meet_cnt    = 0
     meets       = get_meets
     meets.each do |meet|
-      meet_cnt += 1
       delta = process_course(meet,course)
       next if delta == nil
-      binding.pry
+      meet_cnt += 1
       total_delta += delta
       calc_runners_gv(course)
     end
@@ -67,12 +67,14 @@ class CalculateResults
   # process course results
   def process_course(meet,course)
     # skip any course with fewer that three runners
+    Rails.logger.info("--> #{meet.name} - #{meet.date}")
     return nil if Result.where(meet: meet.id, course: course).count < 3
     delta = 0.0
     by_gender = get_course_by_gender(meet,course)
     genders   = by_gender ? ['F','M'] : ['A']
     genders.each do |gender|
       delta += process_course_results(meet.id,course,gender).abs
+      Rails.logger.info("--> delta #{delta} - #{gender}")
     end
     delta / genders.count
   end
@@ -115,7 +117,6 @@ class CalculateResults
                                      runner_id: runner.runner_id,
                                      course: course).first
       if calc_result == nil
-        puts "calc_result - new #{course} #{runner.runner_id}"
         calc_result = CalcResult.new(calc_run_id: @calc_run_id,
                                      meet_id: meet_id,
                                      runner_id: runner.runner_id,
@@ -151,7 +152,7 @@ class CalculateResults
   # get runner's initial gnarliness value (GV)
   def get_runner_gv(result,course,meet_id)
     return get_initial_gv(result) if @c_runner_gv[result.runner_id].nil?
-    @c_runner_gv[result.runner_id]
+    @c_runner_gv[result.runner_id][:cgv]
   end
   
   # runners initial GV is on the course time. Course time = 100,
@@ -172,22 +173,53 @@ class CalculateResults
   
   # calculate runners garliness factor
   def calc_runners_gv(course)
-    binding.pry
-    cur_runner_id   = nil
-    score_list    = []
-    CalcResult.where(course: course).order(:id, score: :desc).select("id, score").each do |r|
-      # first entry for runner?
-      if current_runner_id || current_runner_id != r.id
-        update_runners_gv(score_list, r.id)
+    current_runner_id   = nil
+    score_list          = []
+    races               = 0
+    CalcResult.where(calc_run_id: @calc_run_id, course: course)
+              .order(:runner_id, score: :desc)
+              .select("id, runner_id, score").each do |r|
+      if current_runner_id == nil
+        current_runner_id = r.runner_id
+      elsif current_runner_id != r.runner_id
+        update_runners_gv(score_list, r.runner_id, races)
         score_list = []
-        current_runner_id = r.id
+        current_runner_id = r.runner_id
+        races = 0
       end
+      races += 1
       if r.score > 0
         score_list << r.score
       end
     end
     # process last runner
-    update_runners_gv(score_list, r.id)
+    update_runners_gv(score_list, current_runner_id, races)
+  end
+
+  # calculate and update the runners GV
+  def update_runners_gv(score_list, runner_id, races)
+    cgv_score = calc_modified_average(score_list)
+    avg_score = score_list.reduce(:+).to_f / score_list.size
+    if @update_db == false
+      @c_runner_gv[runner_id] = {cgv: cgv_score, score: avg_score, races: races}
+    else
+      RunnerGv.find_or_initialize_by(runner_id: runner_id,
+                                     calc_run_id: @calc_run_id,
+                                     course: @course)
+              .update_attributes!(cgv: cgv_score, score: avg_score, races: races)
+    end
+  end
+  
+  # for every 2 races past 4, the runner drops there lowest score.
+  def calc_modified_average(score_list)
+    sum = 0;
+    calc_size = score_list.size
+    calc_size = (4 + (calc_size-4)/2) if (calc_size > 5)
+
+    calc_size.times do |score|
+      sum += score_list[score]
+    end
+    (sum / calc_size)
   end
 
   # calculate hamonic mean for list of values
@@ -198,14 +230,5 @@ class CalculateResults
     end
     mean = score_list.size / sum
   end
-  
-  # calculate and update the runners GV
-  def update_runners_gv(score_list)
-    avg = calc_modified_average(score_list)
-  end
-  
-  def calc_modified_average(score_list)
-    binding.pry
-  end
-  
+
 end
