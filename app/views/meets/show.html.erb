@@ -1,2 +1,14 @@
-<h1>Meets#show</h1>
+<h1><%= @meet.name %> - <%= @meet.date %></h1>
 <p>Find me in app/views/meets/show.html.erb</p>
+
+<% @results.each do | course, results | %>
+  <% if results.size > 0 %>
+    <h2><%= course %> Results</h2>
+    <table width=50%>
+    <tr><th>Name</th><th>Place</th><th>Classifier</th><th>Time</th></tr>
+      <% results.each do |r| %>
+        <tr><td><%= Runner.find(r.runner_id).name %></td><td><%= r.place%></td><td><%= r.classifier %></td><td><%= r.float_time.round(2) %></tr>
+      <% end %>
+    </table>
+  <% end %>
+<% end %>

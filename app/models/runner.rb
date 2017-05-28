@@ -3,12 +3,16 @@ class Runner < ActiveRecord::Base
   def self.get_runner(row, file_type)
     # first match by chipno, and name.
     runner = match_runner_card_id(row, file_type)
-    return update_runner(runner, file_type) if runner
+    return update_runner(row, runner, file_type) if runner
     # match on name
     runner = Runner.where(surname: row['Surname'],
                           firstname: row['First name']).first
-    return update_runner(runner, file_type) if runner
+    return update_runner(row, runner, file_type) if runner
     create_runner(row, file_type)
+  end
+  
+  def name
+    "#{self.firstname} #{self.surname}"
   end
   
   private_class_method def self.match_runner_card_id(row, file_type)
@@ -31,7 +35,7 @@ class Runner < ActiveRecord::Base
   end
   
   private_class_method def self.create_runner(row, file_type)
-    if file_type = 'OE0014'
+    if file_type == 'OE0014'
       return create_runner_oe00014(row)
     end
     create_runner_or(row)
@@ -61,9 +65,10 @@ class Runner < ActiveRecord::Base
     runner
   end
   
-  private_class_method def self.update_runner(runner, file_type)
+  #update runners club info
+  private_class_method def self.update_runner(row, runner, file_type)
     # Treat OR as an external data source
-    return runner if file_type = 'OR'
+    return runner if file_type == 'OR'
     # if club changed, update runner record
     if runner.club != row['Cl.name']
       logger.info("runner #{runner.firstname} #{runner.surname} club updated")
@@ -72,6 +77,7 @@ class Runner < ActiveRecord::Base
       runner.club_description = row['City']
       runner.save
     end
+    runner
   end
   
 end

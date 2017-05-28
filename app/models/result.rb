@@ -11,9 +11,9 @@ class Result < ActiveRecord::Base
   def self.load_results(meet_id, file)
     first = true
     CSV.foreach(file.tempfile.path, headers: true, col_sep: ';') do |row|
+      next if row.empty?
       if first == true
         file_type = validate_file_type(row)
-      else
         first = false
       end
       load_result(meet_id, row, file_type)
@@ -30,6 +30,7 @@ class Result < ActiveRecord::Base
   private_class_method def self.load_result(meet_id, row, file_type)
     runner = Runner.get_runner(row, file_type)
     runner_time = row['Time']
+    place = file_type === 'OR' ? 'Pl' : 'Place'
     result = Result.new(meet_id: meet_id,
                         runner_id: runner.id,
                         time: runner_time,
@@ -38,7 +39,8 @@ class Result < ActiveRecord::Base
                         length: row['km'],
                         climb: row['m'],
                         controls: row['Course controls'],
-                        place: row['Place'],
+                        gender: runner.sex,
+                        place: row[place],
                         classifier: row['Classifier'],
                         source_file_type: file_type,
                         include: true)
@@ -80,7 +82,6 @@ class Result < ActiveRecord::Base
   private_class_method def self.set_yellow_result_to_sprint(meet_id, runner_id)
     result = Result.where(runner_id: runner_id, meet_id: meet_id, course: 'Yellow').first
     return unless result
-    binding.pry
     result.course = 'Sprint'
     result.save
   end
