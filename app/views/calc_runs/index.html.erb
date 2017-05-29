@@ -1,0 +1,36 @@
+
+<div class=calc_runs >
+  <table>
+    <tr>
+      <th class=calc >Calculation Run Date</th>
+      <th class=news >News</th>
+   </tr>
+   <tr>
+     <td>
+      <table class=calc_run >
+        <% @calc_runs.each do |calc_run| %>
+          <tr>
+            <td>
+              <%= link_to calc_run.date, calc_run %>
+            </td>
+          <tr>
+        <% end %>
+      </table
+     </td>
+     <td>
+      <table class=news >
+        <% @news.each do |news_item| %>
+          <tr>
+            <td class=date >
+              <%= news_item.date %>
+            </td>
+            <td>
+              <%= sanitize(news_item.text) %>
+            </td>
+          <tr>
+        <% end %>
+      </table
+     </td>
+   </tr>
+  </table>
+</div>

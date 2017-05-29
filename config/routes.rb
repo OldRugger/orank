@@ -4,4 +4,7 @@ Rails.application.routes.draw do
   resources :calc_runs
 
   get 'admin' => 'admin#index'
+  
+  root :to => "calc_runs#index"
+  
 end

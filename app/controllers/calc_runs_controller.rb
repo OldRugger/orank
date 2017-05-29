@@ -1,4 +1,9 @@
 class CalcRunsController < ApplicationController
+  def index
+    @calc_runs = CalcRun.where(publish: true).all
+    @news = News.where(publish: true).all
+  end
+  
   def create
     calc_run = CalcRun.new(status: 'in-process', date: DateTime.now.to_date )
     calc_run.save
