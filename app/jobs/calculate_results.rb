@@ -198,15 +198,15 @@ class CalculateResults
 
   # calculate and update the runners GV
   def update_runners_gv(score_list, runner_id, races)
-    cgv_score = calc_modified_average(score_list)
-    avg_score = score_list.reduce(:+).to_f / score_list.size
+    ranking_score = calc_modified_average(score_list)
+    cgv_score = score_list.reduce(:+).to_f / score_list.size
     if @update_db == false
-      @c_runner_gv[runner_id] = {cgv: cgv_score, score: avg_score, races: races}
+      @c_runner_gv[runner_id] = {cgv: cgv_score, score: ranking_score, races: races}
     else
       RunnerGv.find_or_initialize_by(runner_id: runner_id,
                                      calc_run_id: @calc_run_id,
                                      course: @course)
-              .update_attributes!(cgv: cgv_score, score: avg_score, races: races)
+              .update_attributes!(cgv: cgv_score, score: ranking_score, races: races)
     end
   end
   

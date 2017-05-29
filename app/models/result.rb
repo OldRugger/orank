@@ -9,15 +9,19 @@ class Result < ActiveRecord::Base
   end
 
   def self.load_results(meet_id, file)
-    first = true
-    CSV.foreach(file.tempfile.path, headers: true, col_sep: ';') do |row|
+    file_type = nil
+    first     = true
+    recs      = 0
+    CSV.foreach(file.tempfile.path, skip_blanks: true, headers: true, col_sep: ';') do |row|
       next if row.empty?
+      recs += 1
       if first == true
         file_type = validate_file_type(row)
         first = false
       end
       load_result(meet_id, row, file_type)
     end
+    Rails.logger.info("\n---> #{recs} records added for meet_id: #{meet_id}\n")
     split_yellow_runners(meet_id)
   end
   # note: this is a workaround for a ruby_parser error
@@ -35,7 +39,7 @@ class Result < ActiveRecord::Base
                         runner_id: runner.id,
                         time: runner_time,
                         float_time: get_float_time(runner_time),
-                        course: row['Course'],
+                        course: row['Course'].capitalize,
                         length: row['km'],
                         climb: row['m'],
                         controls: row['Course controls'],

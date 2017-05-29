@@ -81,7 +81,7 @@ ActiveRecord::Schema.define(version: 20170529123021) do
   create_table "runner_gvs", force: :cascade do |t|
     t.string   "course"
     t.float    "cgv"
-    t.string   "score"
+    t.float    "score"
     t.integer  "races"
     t.integer  "calc_run_id"
     t.integer  "runner_id"
