@@ -7,25 +7,34 @@ class CalcRunsController < ApplicationController
   def show
     @calc_run = CalcRun.find(params[:id])
     @course   = params[:course]
+    @courses  = COURSES
     if @course == nil #default to Red
       @course = 'Red'
     end
     @runners = RunnerGv.joins(:runner)
-                         .select('runner_gvs.id, runner_gvs.score, ' +
-                                 'runners.firstname, runners.surname, runners.club_description')
-                           .where(calc_run_id: @calc_run.id, course: @course).order(:score)
-    binding.pry
+                         .select('runner_gvs.id, runner_gvs.score, runner_gvs.races, ' +
+                                 'runners.firstname, runners.surname,' +
+                                 'runners.club_description, runners.sex')
+                          .where(calc_run_id: @calc_run.id, course: @course)
+                          .where('races >= 2')
+                            .order('runners.sex', score: :desc)
+    @clubs = @runners.uniq.pluck(:club_description)
+    @clubs.reject! { |c| c.to_s.empty? || c.rstrip.empty? }
+    @clubs << 'All High Schools'
+    @clubs.sort!
   end
   
   def create
-    calc_run = CalcRun.new(status: 'in-process', date: DateTime.now.to_date )
-    calc_run.save
-    start = Time.now
-    CalculateResults.new.perform(calc_run)
-    finish = Time.now
-    calc_run.status = 'complete'
-    calc_run.calc_time = finish - start
-    calc_run.save
+    Thread.new do
+      calc_run = CalcRun.new(status: 'in-process', date: DateTime.now.to_date )
+      calc_run.save
+      start = Time.now
+      CalculateResults.new.perform(calc_run)
+      finish = Time.now
+      calc_run.status = 'complete'
+      calc_run.calc_time = finish - start
+      calc_run.save
+    end
     redirect_to controller: 'admin', action: 'index'
   end
 end

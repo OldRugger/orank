@@ -18,8 +18,24 @@
     white-space: nowrap;
     padding-right: 25px;
   }
+  .index {
+    width: 25%;
+    .filter {
+      text-align: center;
+    }
+  }
   td {
     vertical-align: text-top;
   }
-  
+  .course_details {
+    th {
+      background-color: #A6BA65;
+    }
+  }
+}
+.calc_run_left_header {
+  text-align: left;
+}
+.calc_run_right_header {
+  text-align: right;
 }
