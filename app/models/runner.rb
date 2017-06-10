@@ -49,7 +49,7 @@ class Runner < ActiveRecord::Base
                         club_id: row['Club no.'],
                         club: row['Cl.name'],
                         club_description: row['City'])
-    logger.info("runner #{runner.firstname} #{runner.surname} added to database")
+    logger.info("runner #{runner.firstname} #{runner.surname} added to database - OE0014")
     runner.save
     runner
   end
@@ -57,10 +57,9 @@ class Runner < ActiveRecord::Base
   private_class_method def self.create_runner_or(row)
     runner = Runner.new(surname: row['Surname'],
                         firstname: row['First name'],
-                        card_id: row[''],
                         sex: row['S'],
                         club_description: row['City'])
-    logger.info("runner #{runner.firstname} #{runner.surname} added to database")
+    logger.info("runner #{runner.firstname} #{runner.surname} #{runner.sex} added to database - OR")
     runner.save
     runner
   end

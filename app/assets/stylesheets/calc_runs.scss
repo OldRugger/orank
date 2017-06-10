@@ -1,3 +1,41 @@
 // Place all the styles related to the CalcRuns controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+.calc_runs table {
+  width: 100%;
+  margin-top: 5px;
+  .calc {
+    width: 15%;
+  }
+  .news {
+    width: 85%;
+  }
+  .calc_run {
+    text-align: center;
+  }
+  .date {
+    font-weight: bold;
+    white-space: nowrap;
+    padding-right: 25px;
+  }
+  .index {
+    width: 25%;
+    .filter {
+      text-align: center;
+    }
+  }
+  td {
+    vertical-align: text-top;
+  }
+  .course_details {
+    th {
+      background-color: #A6BA65;
+    }
+  }
+}
+.calc_run_left_header {
+  text-align: left;
+}
+.calc_run_right_header {
+  text-align: right;
+}

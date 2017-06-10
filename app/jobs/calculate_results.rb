@@ -20,16 +20,17 @@ class CalculateResults
     init_globals(course)
     delta = 99.5 # init delta to high value.
     pass  = 0
-    while (delta > 0.7) do
+    while (delta > 0.5) do
       pass += 1
       delta = calc_race_gv(course)
-      if (pass > 14)
+      if (pass > 20)
         break
       end
       Rails.logger.info("--> Pass: #{pass}, delta: #{delta}")
     end
     # final run to update database
     @update_db = true # update runners
+    Rails.logger.info("--> Update database <--")
     calc_race_gv(course)
   end
 
@@ -45,7 +46,7 @@ class CalculateResults
 
   # calculate race / course garliness factor
   def calc_race_gv(course)
-    Rails.logger.info("Process course #{course}")
+    # Rails.logger.info("Process course #{course}")
     total_delta = 0.0
     meet_cnt    = 0
     meets       = get_meets
@@ -67,40 +68,44 @@ class CalculateResults
   # process course results
   def process_course(meet,course)
     # skip any course with fewer that three runners
-    Rails.logger.info("--> #{meet.name} - #{meet.date}")
+    # Rails.logger.info("--> #{meet.name} - #{meet.date}")
     return nil if Result.where(meet: meet.id, course: course).count < 3
-    delta = 0.0
-    by_gender = get_course_by_gender(meet,course)
-    genders   = by_gender ? ['F','M'] : ['A']
-    genders.each do |gender|
-      delta += process_course_results(meet.id,course,gender).abs
-      Rails.logger.info("--> delta #{delta} - #{gender}")
-    end
-    delta / genders.count
+    # delta = 0.0
+    # by_gender = get_course_by_gender(meet,course)
+    # genders   = by_gender ? ['F','M'] : ['A']
+    # genders.each do |gender|
+    #   puts "#{meet.name} #{course} #{gender} "
+    #   delta += process_course_results(meet.id,course,gender).abs
+    # end
+    # delta / genders.count
+    process_course_results(meet.id,course).abs
   end
   
 
   # If there are three of each gender, calcs will be by gender.
-  def get_course_by_gender(meet,course)
-    Result.where(meet: meet.id, course: course, gender: 'F', classifier: '0').count >= 3 &&
-    Result.where(meet: meet.id, course: course, gender: 'M', classifier: '0').count >= 3
-  end
+  # def get_course_by_gender(meet,course)
+  #   @female_runners = Result.where(meet: meet.id, course: course, gender: 'F', classifier: '0').count
+  #   @female_runners >= 2 &&
+  #   Result.where(meet: meet.id, course: course, gender: 'M', classifier: '0').count >= 2
+  # end
   
-  def process_course_results(meet_id,course,gender)
-    runner_entry = Struct.new(:runner_id, :runner_time)
+  def process_course_results(meet_id,course)
+    runner_entry = Struct.new(:runner_id, :runner_time, :result_id)
     runner_times = []
     score_list   = []
-    results = get_course_results(meet_id,course,gender)
+    results = get_course_results(meet_id,course)
+    puts "results #{results.count}"
     results.each do |result|
       # if valid result
       if result.classifier == 0
         runner_gv    = get_runner_gv(result,course,meet_id)
         score_list   << (result.float_time * runner_gv)
-        runner_times << runner_entry.new(result.runner_id, result.float_time)
+        runner_times << runner_entry.new(result.runner_id, result.float_time, result.id)
       end
     end
-    return 0 if score_list.size < 3
+    # return 0 if score_list.size < 3
     course_cgv = get_harmonic_mean(score_list)
+    # puts "#course cgv #{course_cgv}"
     delta = update_meet_course_results(meet_id, results, course_cgv, course, runner_times)
   end
   
@@ -114,11 +119,15 @@ class CalculateResults
       runner_score = course_cgv/time
       calc_result = CalcResult.where(calc_run_id: @calc_run_id,
                                      meet_id: meet_id,
+                                     result_id: runner.result_id,
                                      runner_id: runner.runner_id,
                                      course: course).first
       if calc_result == nil
+        puts "new calc_result #{Runner.find(runner.runner_id).name} - #{runner.result_id}"
+
         calc_result = CalcResult.new(calc_run_id: @calc_run_id,
                                      meet_id: meet_id,
+                                     result_id: runner.result_id,
                                      runner_id: runner.runner_id,
                                      course: course,
                                      float_time: time,
@@ -138,14 +147,9 @@ class CalculateResults
   end
   
   # get meet/course resutls
-  def get_course_results(meet_id,course,gender)
-    if gender == 'A'
-      results = Result.where(meet: meet_id, course: course, classifier: '0').order(:float_time)
-    else
-      results = Result.where(meet: meet_id, course: course, gender: gender, classifier: '0').order(:float_time)
-    end
+  def get_course_results(meet_id,course)
+    results = Result.where(meet: meet_id, course: course, classifier: '0').order(:float_time)
     @course_time = get_course_time(results) #need to cache this
-    puts "#{meet_id} - #{course} - #{gender}: course time - #{@course_time}"
     results
   end
   
@@ -182,7 +186,7 @@ class CalculateResults
       if current_runner_id == nil
         current_runner_id = r.runner_id
       elsif current_runner_id != r.runner_id
-        update_runners_gv(score_list, r.runner_id, races)
+        update_runners_gv(score_list, current_runner_id, races)
         score_list = []
         current_runner_id = r.runner_id
         races = 0
@@ -198,15 +202,16 @@ class CalculateResults
 
   # calculate and update the runners GV
   def update_runners_gv(score_list, runner_id, races)
-    cgv_score = calc_modified_average(score_list)
-    avg_score = score_list.reduce(:+).to_f / score_list.size
+    ranking_score = calc_modified_average(score_list)
+    cgv_score = score_list.reduce(:+).to_f / score_list.size
+    # puts "#{Runner.find(runner_id).name} #{ranking_score} #{cgv_score} #{races}"
     if @update_db == false
-      @c_runner_gv[runner_id] = {cgv: cgv_score, score: avg_score, races: races}
+      @c_runner_gv[runner_id] = {cgv: cgv_score, score: ranking_score, races: races}
     else
       RunnerGv.find_or_initialize_by(runner_id: runner_id,
                                      calc_run_id: @calc_run_id,
                                      course: @course)
-              .update_attributes!(cgv: cgv_score, score: avg_score, races: races)
+              .update_attributes!(cgv: cgv_score, score: ranking_score, races: races)
     end
   end
   
