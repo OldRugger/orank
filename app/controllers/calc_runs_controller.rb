@@ -7,6 +7,7 @@ class CalcRunsController < ApplicationController
   def show
     @calc_run = CalcRun.find(params[:id])
     @course   = params[:course]
+    @filter   = params[:filter]
     @courses  = COURSES
     if @course == nil #default to Red
       @course = 'Red'
@@ -20,8 +21,16 @@ class CalcRunsController < ApplicationController
                             .order('runners.sex', score: :desc)
     @clubs = @runners.uniq.pluck(:club_description)
     @clubs.reject! { |c| c.to_s.empty? || c.rstrip.empty? }
+    @clubs << ' '
     @clubs << 'All High Schools'
     @clubs.sort!
+    if @filter && @filter.length > 0
+      if @filter == 'All High Schools'
+        @runners = @runners.where("runners.club_description like '% HS'")
+      else
+        @runners = @runners.where("runners.club_description = ?", @filter)
+      end
+    end
   end
   
   def create

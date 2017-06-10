@@ -7,6 +7,7 @@
    </tr>
   </table>
   <hr>
+  
   <table>
     <tr>
       <td class=index>
@@ -17,10 +18,20 @@
                 <%if course == @course %>
                   'class=selected'
                 <% end %> >
-                <%= course %>
+                <b><%= link_to course, :id => @calc_run.id, :course => course %>
               </td>
-            <tr>
+            </tr>
           <% end %>
+          <tr>
+            <td>
+              <br><br>
+              <b>High School Power Rankings</b>
+              <br><br>
+			        <p><b> All Results </b>
+ 			        <p><%= link_to 'Back', :back %>
+              <p><%= link_to 'Home', calc_runs_path %>
+            </td>
+          </tr>
         </table>
       </td>
       <td>
@@ -54,9 +65,13 @@
           <tr><th>Filter Results by Club</th></tr>
           <tr>
             <td class= filter>
-              <select>
+              <select id='club_filter'>
                 <% @clubs.each do |c| %>
-                  <option value = "<%= c %>"><%= c %> </option>
+                  <option value = "<%= c %>"
+                    <% if c == @filter %>
+                      selected
+                    <% end %>
+                  ><%= c %> </option>
                 <% end %>
               </select>
         </table
@@ -64,4 +79,16 @@
     </tr>
  </table>
 </div>
-<%= debug(@clubs) %>
+<script type="text/javascript">
+$('#club_filter').change(function(){
+  id = <%= @calc_run.id %>;
+  course = "<%= @course %>";
+  filter = "<%= @filter %>"
+  if (filter == ' ') {
+    window.location.href = "/calc_runs/" + id + "?course=" + course;
+  } else {
+    window.location.href = "/calc_runs/" + id + "?course=" + course + "&filter=" + $(this).val();
+  }
+});
+</script>
+
