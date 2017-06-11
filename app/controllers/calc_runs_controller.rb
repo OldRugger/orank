@@ -14,7 +14,7 @@ class CalcRunsController < ApplicationController
     end
     @runners = RunnerGv.joins(:runner)
                          .select('runner_gvs.id, runner_gvs.score, runner_gvs.races, ' +
-                                 'runners.firstname, runners.surname,' +
+                                 'runners.firstname, runners.surname, runners.id as runner_id, ' +
                                  'runners.club_description, runners.sex')
                           .where(calc_run_id: @calc_run.id, course: @course)
                           .where('races >= 2')

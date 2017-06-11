@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  get 'runners/show'
+
   resources :meets
   resources :calc_runs
 
