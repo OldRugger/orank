@@ -51,7 +51,9 @@
             <% end %>
             <tr>
               <td><%= place += 1 %> </td>
-              <td><%= "#{r.firstname} #{r.surname}" %> </td>
+              <td>
+                <%= link_to "#{r.firstname} #{r.surname}", runners_show_path(:id => r.runner_id, :calc_id => @calc_run.id)  %>
+              </td>
               <td><%= r.club_description %> </td>
               <td><%= r.sex %> </td>
               <td class=score><%= '%.3f' % r.score %> </td>

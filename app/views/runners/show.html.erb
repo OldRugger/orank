@@ -1,0 +1,77 @@
+<div class=runner >
+  <hr>
+  <table>
+    <tr>
+      <td class=runner_left_header ><b><%= "#{@runner.firstname} #{@runner.surname}" %></b> </td>
+      <td class=runner_right_header ><b>Calculation Date: <%= @calc_run.date %></b></td>
+   </tr>
+  </table>
+  <hr>
+  <table>
+    <tr>
+      <td class=runner_info>
+        <table>
+          <tr>
+            <td><b>Runner Id</b></td>
+            <td><%= @runner.id %></td>
+          </tr>
+          <tr>
+            <td><b>Club</b></td>
+            <td><%= @runner.club_description %></td>
+          </tr>
+          <tr>
+            <td><b>Gender</b></td>
+            <td><%= @runner.sex %></td>
+          </tr>
+        </table>
+        <table>
+          <tr>
+            <th>
+              Course
+            </th>
+            <th>
+              Ranking Score
+            </th>
+            <th>
+              Races
+            </th>
+          </tr>
+          <% @rankings.each do |r| %>
+            <tr>
+              <td>
+                <%= r.course %>
+              </td>
+              <td class=center>
+                <%= r.score.round(3) %>
+              </td>
+              <td class=center>
+                <%= r.races %>
+              </td>
+            </tr>
+          
+          <% end %>
+        </table>
+      </td>
+      <td class=runner_results>
+        <table >
+          <tr>
+            <th>Date</th><th>Meet</th><th>Course</th><th>Length</th><th>Climb</th><th>Time<br>(Minutes)</th><th>Place</th><th>Score</th>
+          </tr>
+          <% @calc_results.each do |r| %>
+            <tr>
+              <td class=center ><%= r.meet_date %></td>
+              <td><%= r.meet_name %></td>
+              <td><%= r.course %></td>
+              <td class=center><%= r.length %></td>
+              <td class=center><%= r.climb %></td>
+              <td class=center><%= r.time.round(2) %></td>
+              <td class=center><%= r.place %></td>
+              <td class=center><%= r.score.round(3) %></td>
+            </tr>
+          <% end %>
+        </table>
+      </td>
+    </tr>
+  </table>
+</div>
+
