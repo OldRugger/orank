@@ -22,6 +22,7 @@ class Result < ActiveRecord::Base
       load_result(meet_id, row, file_type)
     end
     Rails.logger.info("\n---> #{recs} records added for meet_id: #{meet_id}\n")
+    File.delete(file.tempfile.path) if File.exist?(file.tempfile.path)
     split_yellow_runners(meet_id)
   end
   # note: this is a workaround for a ruby_parser error

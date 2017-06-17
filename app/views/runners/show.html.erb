@@ -39,7 +39,7 @@
           <% @rankings.each do |r| %>
             <tr>
               <td>
-                <%= r.course %>
+                <%= link_to r.course, controller: 'calc_runs', action: 'show', id: @calc_run.id, course: r.course %>
               </td>
               <td class=center>
                 <%= r.score.round(3) %>
@@ -51,6 +51,9 @@
           
           <% end %>
         </table>
+        <br><br>
+        <p><%= link_to 'Back', :back %>
+        <p><%= link_to 'Home', calc_runs_path %>
       </td>
       <td class=runner_results>
         <table >
@@ -60,7 +63,7 @@
           <% @calc_results.each do |r| %>
             <tr>
               <td class=center ><%= r.meet_date %></td>
-              <td><%= r.meet_name %></td>
+              <td><%= link_to r.meet_name, controller: 'meets', action: 'show', id: r.meet_id %></td>
               <td><%= r.course %></td>
               <td class=center><%= r.length %></td>
               <td class=center><%= r.climb %></td>

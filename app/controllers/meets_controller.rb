@@ -6,11 +6,11 @@ class MeetsController < ApplicationController
 
   def show
     @meet = Meet.find(params[:id])
-    courses = ['Red', 'Green', 'Brown', 'Orange', 'Yellow', 'Sprint']
+    courses = COURSES
     @results = {}
     courses.each do |c|
       @results[c] = Result.where(meet_id: @meet.id, course: c)
-                    .select("id, runner_id, place, classifier, float_time")
+                    .select("id, runner_id, place, classifier, float_time as time, gender")
                     .order(:classifier, :place).all
     end
   end
