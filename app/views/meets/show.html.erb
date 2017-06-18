@@ -8,8 +8,13 @@
 </table>
 <hr>
 <% @results.each do |course, results| %>
+  <% next if @results[course].size == 0 %>
+  <% f = @results[course].first %>
   <h2><%= course %></h2>
   <table align=center>
+    <tr><td colspan=5>
+      Length = <%= f.length %>, Climb = <%= f.climb %>, Controls = <%= f.controls %>
+    </td></tr>
     <tr>
       <th>Runner</th><th>Place</th><th>Classifier</th><th>Time</th><th>Gender</th>
     </tr>

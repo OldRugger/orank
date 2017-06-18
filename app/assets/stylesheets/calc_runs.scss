@@ -9,7 +9,6 @@
   }
   .calc_run {
     text-align: center;
-    width: 15%;
   }
   .date {
     font-weight: bold;
@@ -25,10 +24,30 @@
   td {
     vertical-align: text-top;
   }
-  .course_details {
+  .course_details{
     th {
       background-color: #A6BA65;
     }
+    .rank {
+      width: 9%;
+      text-align: center;
+    }
+    .runner {
+      width: 29%;
+    }
+    .gender {
+      width: 3%;
+      text-align: center;
+    }
+    .score {
+      width: 9%;
+      text-align: center;
+    }
+    .races {
+      width: 9%;
+      text-align: center;
+    }
+
   }
 }
 .calc_run_left_header {
@@ -37,4 +56,28 @@
 .calc_run_right_header {
   text-align: right;
 }
+#show_all {
+  th {
+    background-color: #A6BA65;
+  }
 
+  .center {
+    text-align: center;
+  }
+
+  .all_index {
+    width: 30%;
+    padding-right: 50px;
+    padding-left: 10px;
+    th {
+      background-color: #A6BA65;
+    }
+  
+    .center {
+      text-align: center;
+    }
+  }
+  .all_details {
+    padding-right: 20px;
+  }
+}

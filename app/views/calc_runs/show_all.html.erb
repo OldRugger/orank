@@ -1,0 +1,63 @@
+<div class=calc_runs >
+  <hr>
+  <table>
+    <tr>
+      <% @meet = Meet.find(@meet_id) %>
+      <th class=calc_run_left_header ><%= "#{@meet.name} - #{@meet.date}" %> </th>
+      <th class=calc_run_right_header >Calculation Date: <%= @calc_run.date %></th>
+   </tr>
+  </table>
+  <hr>
+  <table id=show_all>
+    <td class=all_index>
+      <table>
+        <tr>
+          <th>Date</th><th>Meet</th><th>Total Starts</th>
+          <% @calc_results.each do |cr| %>
+            <tr>
+              <td class=center><%= cr.date %></td>
+              <td><%= link_to cr.name, calc_runs_show_all_path(id: @calc_run.id, meet_id: cr.meet_id) %></td>
+              <td class=center><%= cr.count %></td>
+              <% if cr.meet_id == @meet.id %>
+                <% @calc_courses.each do |c| %>
+                  <tr><td></td><td>&nbsp;&nbsp<i><a href="#<%= c.course %>"><%= c.course%></a></i><td class=center><i><%= c.count %></i></td></tr>
+                <% end %>
+              <% end %>
+            </tr>
+          <% end %>
+        </tr>
+      </table>
+      <p><%= link_to 'Back', :back %>
+      <p><%= link_to 'Home', calc_runs_path %>
+
+    </td>
+    <td class=all_details>
+      <% save_course = nil %>
+      <% i = 1 %>
+      <% @calc_details.each do |d| %>
+        <% if save_course == nil || save_course != d.course%>
+          <% i = 1 %>
+          <% if save_course %>
+            </table>
+          <% end %>
+          <b id="<%= d.course %>"><%= d.course %></b> <a href="#">top</a><br>
+          Length = <%= d.length %>, Climb = <% d.climb %>, Controls = <%= d.controls %>, CGV = <%= d.course_cgv.round(3) %>
+          <table>
+            <tr><th>Pace</th><th>Name</th><th>Club</th><th>Time<br>(in minutes)</th><th>score</th></tr>
+          <% save_course = d.course %>
+        <% end %>
+        <tr>
+          <td><%= i %></td>
+          <td><%= "#{d.firstname} #{d.surname}" %></td>
+          <td><%= d.club_description %></td>
+          <td><%= d.float_time.round(2) %></td>
+          <td><%= d.score.round(2) %></td>
+        <tr>
+        <% i += 1 %>
+    
+      <% end %>
+      </table>
+    </td>
+  </table>
+</div>
+

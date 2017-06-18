@@ -10,8 +10,9 @@ class MeetsController < ApplicationController
     @results = {}
     courses.each do |c|
       @results[c] = Result.where(meet_id: @meet.id, course: c)
-                    .select("id, runner_id, place, classifier, float_time as time, gender")
-                    .order(:classifier, :place).all
+                      .select('id, runner_id, place, classifier, length, climb, controls, ' +
+                            'float_time as time, gender')
+                        .order(:classifier, :place).all
     end
   end
 
