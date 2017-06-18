@@ -1,15 +1,32 @@
-<div class=meet>
-  <h1><%= @meet.name %> - <%= @meet.date %></h1>
-  <% @results.each do | course, results | %>
-    <% if results.size > 0 %>
-      <h2><%= course %> Results</h2>
-      
-        <table %>
-        <tr><th>Name</th><th>Place</th><th>Classifier</th><th>Time</th></tr>
-          <% results.each do |r| %>
-            <tr><td class=name><%= Runner.find(r.runner_id).name %></td><td><%= r.place%></td><td><%= r.classifier %></td><td><%= r.float_time.round(2) %></tr>
-          <% end %>
-        </table>
+<div class=show_meet>
+<hr>
+<table>
+  <tr>
+    <td class=meet_left_header><b><%= @meet.name %></b></td>
+    <td class=meet_right_header><b><%= @meet.date %></b></td>
+  </tr>
+</table>
+<hr>
+<% @results.each do |course, results| %>
+  <% next if @results[course].size == 0 %>
+  <% f = @results[course].first %>
+  <h2><%= course %></h2>
+  <table align=center>
+    <tr><td colspan=5>
+      Length = <%= f.length %>, Climb = <%= f.climb %>, Controls = <%= f.controls %>
+    </td></tr>
+    <tr>
+      <th>Runner</th><th>Place</th><th>Classifier</th><th>Time</th><th>Gender</th>
+    </tr>
+    <% @results[course].each do |r| %>
+      <tr>
+        <td><%= Runner.find(r.runner_id).name %></td>
+        <td><%= r.place %></td>
+        <td><%= r.classifier %></td>
+        <td><%= r.time.round(3) %></td>
+        <td><%= r.gender %></td>
+      </tr>
     <% end %>
-  <% end %>
+  </table>
+<% end %>
 </div>

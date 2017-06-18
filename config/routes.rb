@@ -7,6 +7,8 @@ Rails.application.routes.draw do
 
   get 'admin' => 'admin#index'
   
+  get 'calc_runs_show_all' => 'calc_runs#show_all'
+  
   root :to => "calc_runs#index"
   
 end

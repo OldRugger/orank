@@ -33,6 +33,52 @@ class CalcRunsController < ApplicationController
     end
   end
   
+  def show_all
+    @calc_run = CalcRun.find(params[:id])
+    @meet_id  = params[:meet_id]
+    @calc_results = CalcResult.joins(:meet)
+                      .select('meets.name, meets.date, meets.id as meet_id, count(calc_results.id) as count')
+                        .where('calc_results.calc_run_id = ?', @calc_run.id)
+                          .group(:name, :date)
+                            .order('meets.date DESC')
+                            
+    @meet_id = @calc_results.first.meet_id if @meet_id == nil
+    
+    @calc_courses = CalcResult.joins(:meet)
+                      .select('course, meets.name, meets.date, meets.id as meet_id, ' +
+                              'count(calc_results.id) as count')
+                        .where('calc_results.calc_run_id = ? and meets.id = ?',
+                               @calc_run.id, @meet_id)
+                          .group(:course)
+                            .order("case course
+                                      when 'Sprint' then 6
+                                      when 'Yellow' then 5
+                                      when 'Orange' then 4
+                                      when 'Brown'  then 3
+                                      when 'Green'  then 2
+                                      when  'Red'   then 1
+                                      else 0
+                                    end ")
+                                    
+    @calc_details = CalcResult.joins(:meet, :runner, :result)
+                      .select('calc_results.course, length, results.climb as climb, controls, course_cgv, ' +
+                              'surname, firstname, runners.id as runner_id, ' +
+                              'club_description, calc_results.float_time, score')
+                        .where('calc_results.calc_run_id = ? and meets.id = ?',
+                               @calc_run.id, @meet_id)
+                          .order("case calc_results.course
+                                    when 'Sprint' then 6
+                                    when 'Yellow' then 5
+                                    when 'Orange' then 4
+                                    when 'Brown'  then 3
+                                    when 'Green'  then 2
+                                    when  'Red'   then 1
+                                    else 0
+                                  end ")
+
+      
+  end
+  
   def create
     Thread.new do
       calc_run = CalcRun.new(status: 'in-process', date: DateTime.now.to_date )

@@ -17,12 +17,13 @@ ActiveRecord::Schema.define(version: 20170529123021) do
     t.float    "float_time"
     t.float    "score"
     t.float    "course_cgv"
+    t.float    "normalized_score"
     t.integer  "result_id"
     t.integer  "meet_id"
     t.integer  "calc_run_id"
     t.integer  "runner_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
     t.string   "course"
   end
 
@@ -62,7 +63,7 @@ ActiveRecord::Schema.define(version: 20170529123021) do
     t.float    "float_time"
     t.string   "course"
     t.string   "source_file_type"
-    t.integer  "length"
+    t.float    "length"
     t.integer  "climb"
     t.integer  "controls"
     t.integer  "place"

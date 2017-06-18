@@ -5,7 +5,7 @@ class CreateResults < ActiveRecord::Migration
       t.float :float_time
       t.string :course
       t.string :source_file_type
-      t.integer :length
+      t.float :length
       t.integer :climb
       t.integer :controls
       t.integer :place
