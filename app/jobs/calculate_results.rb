@@ -10,6 +10,9 @@ class CalculateResults
     calc_results("Green")
     calc_results("Brown")
     calc_results("Red")
+    normalize_scores
+    create_power_rankings
+    Rails.logger.info("--> calc run complete <---")
   end
   
   private
@@ -26,7 +29,7 @@ class CalculateResults
       if (pass > 20)
         break
       end
-      Rails.logger.info("--> Pass: #{pass}, delta: #{delta}")
+      Rails.logger.info("--> #{course} Pass: #{pass}, delta: #{delta}")
     end
     # final run to update database
     @update_db = true # update runners
@@ -67,17 +70,7 @@ class CalculateResults
 
   # process course results
   def process_course(meet,course)
-    # skip any course with fewer that three runners
-    # Rails.logger.info("--> #{meet.name} - #{meet.date}")
     return nil if Result.where(meet: meet.id, course: course).count < 3
-    # delta = 0.0
-    # by_gender = get_course_by_gender(meet,course)
-    # genders   = by_gender ? ['F','M'] : ['A']
-    # genders.each do |gender|
-    #   puts "#{meet.name} #{course} #{gender} "
-    #   delta += process_course_results(meet.id,course,gender).abs
-    # end
-    # delta / genders.count
     process_course_results(meet.id,course).abs
   end
   
@@ -94,7 +87,6 @@ class CalculateResults
     runner_times = []
     score_list   = []
     results = get_course_results(meet_id,course)
-    puts "results #{results.count}"
     results.each do |result|
       # if valid result
       if result.classifier == 0
@@ -123,8 +115,6 @@ class CalculateResults
                                      runner_id: runner.runner_id,
                                      course: course).first
       if calc_result == nil
-        puts "new calc_result #{Runner.find(runner.runner_id).name} - #{runner.result_id}"
-
         calc_result = CalcResult.new(calc_run_id: @calc_run_id,
                                      meet_id: meet_id,
                                      result_id: runner.result_id,
@@ -204,7 +194,6 @@ class CalculateResults
   def update_runners_gv(score_list, runner_id, races)
     ranking_score = calc_modified_average(score_list)
     cgv_score = score_list.reduce(:+).to_f / score_list.size
-    # puts "#{Runner.find(runner_id).name} #{ranking_score} #{cgv_score} #{races}"
     if @update_db == false
       @c_runner_gv[runner_id] = {cgv: cgv_score, score: ranking_score, races: races}
     else
@@ -236,4 +225,88 @@ class CalculateResults
     mean = score_list.size / sum
   end
 
+  # normalize scores for high school power rankings
+  # the harmonic_mean of the top 10% of results for
+  # each class/gender will represent a score of 100
+  def normalize_scores
+    COURSES.each do |course|
+      ['M','F'].each do |gender|
+        # do not include male / brown course results
+        next if course == 'Brown' && gender == 'M'
+        normalize_course_scores(course, gender)
+      end
+    end
+  end
+
+  def normalize_course_scores(course, gender)
+    Rails.logger.info("--> normalize results #{course}, #{gender}")
+    results = RunnerGv.joins(:runner)
+                .where(calc_run_id: @calc_run_id, course: course, 'runners.sex': gender)
+                  .where("runners.club_description like '% HS'")
+                    .order(score: :desc)
+    count = results.count
+    return if count == 0
+    normalize_factor = 100 / get_normalized_score(results, count)
+    set_normalized_value(results, normalize_factor)
+  end
+  
+  def set_normalized_value(results, normalize_factor)
+    results.each do |r|
+      r.normalized_score = r.score * normalize_factor
+      r.save
+    end
+  end
+  
+  def get_normalized_score(results, count)
+    score_list = []
+    top_results = results.limit((count * 0.10).ceil)
+    top_results.each do |r|
+      score_list << r.score
+    end
+    get_harmonic_mean(score_list)
+  end
+  
+  def create_power_rankings
+    Rails.logger.info("--> create power rankings")
+    # varsity
+    exclude = create_power_ranking_by_class("Varsity", ['Red','Green','Brown'], nil)
+    exclude = create_power_ranking_by_class("Junior Varsity", ['Orange'], exclude)
+    create_power_ranking_by_class("Intermediate", ['Yellow'], exclude)
+  end
+  
+  def create_power_ranking_by_class(ranking_class, courses, exclude)
+    Rails.logger.info("----> #{ranking_class}")
+    schools = RunnerGv.joins(:runner)
+               .where(calc_run_id: @calc_run_id, course: courses)
+                 .where("runners.club_description like '% HS'")
+                   .uniq.pluck('runners.club_description')
+    schools.each do |school|
+      calc_schools_ranking(school, courses, ranking_class)
+    end
+  end
+  
+  def calc_schools_ranking(school, courses, ranking_class)
+    exclude = []
+    results = RunnerGv.joins(:runner)
+                .where(calc_run_id: @calc_run_id, course: courses, 'runners.club_description': school)
+                  .where('races > 1')
+                    .where.not(normalized_score: nil)
+                    .order(normalized_score: :desc)
+                      .limit(5)
+    return exclude if results.count == 0
+    team_score = 0
+    pw = PowerRanking.new(calc_run_id: @calc_run_id, school: school, ranking_class: ranking_class)
+    pw.save
+    results.each do |r|
+      team_score += r.normalized_score
+      RankingAssignment.new(power_ranking_id: pw.id, runner_id: r.runner_id).save
+    end
+    if team_score > 0
+      pw.total_score = team_score
+      pw.save
+      Rails.logger.info("------> #{school}")
+      Rails.logger.info("-------->team score #{pw.total_score}")
+    end
+  end
+  
 end

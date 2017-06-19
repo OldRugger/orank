@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170529123021) do
+ActiveRecord::Schema.define(version: 20170618235453) do
 
   create_table "calc_results", force: :cascade do |t|
     t.float    "float_time"
@@ -58,6 +58,27 @@ ActiveRecord::Schema.define(version: 20170529123021) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "power_rankings", force: :cascade do |t|
+    t.string   "school"
+    t.string   "ranking_class"
+    t.float    "total_score"
+    t.integer  "calc_run_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "power_rankings", ["calc_run_id"], name: "index_power_rankings_on_calc_run_id"
+
+  create_table "ranking_assignments", force: :cascade do |t|
+    t.integer  "power_ranking_id"
+    t.integer  "runner_id"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
+  add_index "ranking_assignments", ["power_ranking_id"], name: "index_ranking_assignments_on_power_ranking_id"
+  add_index "ranking_assignments", ["runner_id"], name: "index_ranking_assignments_on_runner_id"
+
   create_table "results", force: :cascade do |t|
     t.time     "time"
     t.float    "float_time"
@@ -86,8 +107,9 @@ ActiveRecord::Schema.define(version: 20170529123021) do
     t.integer  "races"
     t.integer  "calc_run_id"
     t.integer  "runner_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+    t.float    "normalized_score"
   end
 
   add_index "runner_gvs", ["calc_run_id"], name: "index_runner_gvs_on_calc_run_id"
