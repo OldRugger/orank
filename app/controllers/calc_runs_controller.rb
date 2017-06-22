@@ -1,7 +1,7 @@
 class CalcRunsController < ApplicationController
   def index
-    @calc_runs = CalcRun.where(publish: true).all
-    @news = News.where(publish: true).all
+    @calc_runs = CalcRun.where(publish: true).all.order(id: :desc)
+    @news = News.where(publish: true).all.order(id: :desc)
   end
 
   def show

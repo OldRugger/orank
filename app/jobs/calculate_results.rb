@@ -226,7 +226,7 @@ class CalculateResults
   end
 
   # normalize scores for high school power rankings
-  # the harmonic_mean of the top 10% of results for
+  # the average of the top 10% of results (min of 2) for
   # each class/gender will represent a score of 100
   def normalize_scores
     COURSES.each do |course|
@@ -243,7 +243,8 @@ class CalculateResults
     results = RunnerGv.joins(:runner)
                 .where(calc_run_id: @calc_run_id, course: course, 'runners.sex': gender)
                   .where("runners.club_description like '% HS'")
-                    .order(score: :desc)
+                    .where('races > 1')
+                      .order(score: :desc)
     count = results.count
     return if count == 0
     normalize_factor = 100 / get_normalized_score(results, count)
@@ -259,11 +260,13 @@ class CalculateResults
   
   def get_normalized_score(results, count)
     score_list = []
-    top_results = results.limit((count * 0.10).ceil)
+    limit = (count * 0.10).ceil
+    limit = 2 if limit < 2
+    top_results = results.limit(limit)
     top_results.each do |r|
       score_list << r.score
     end
-    get_harmonic_mean(score_list)
+    score_list.inject { |sum, el| sum + el}.to_f / score_list.size
   end
   
   def create_power_rankings
@@ -279,27 +282,28 @@ class CalculateResults
     schools = RunnerGv.joins(:runner)
                .where(calc_run_id: @calc_run_id, course: courses)
                  .where("runners.club_description like '% HS'")
-                   .uniq.pluck('runners.club_description')
+                   .where("races > 1")
+                     .uniq.pluck('runners.club_description')
     schools.each do |school|
-      calc_schools_ranking(school, courses, ranking_class)
+      calc_schools_ranking(school, courses, ranking_class, exclude)
     end
   end
   
-  def calc_schools_ranking(school, courses, ranking_class)
+  def calc_schools_ranking(school, courses, ranking_class, exclude)
     exclude = []
     results = RunnerGv.joins(:runner)
                 .where(calc_run_id: @calc_run_id, course: courses, 'runners.club_description': school)
                   .where('races > 1')
                     .where.not(normalized_score: nil)
-                    .order(normalized_score: :desc)
-                      .limit(5)
+                      .order(normalized_score: :desc)
+                        .limit(5)
     return exclude if results.count == 0
     team_score = 0
     pw = PowerRanking.new(calc_run_id: @calc_run_id, school: school, ranking_class: ranking_class)
     pw.save
     results.each do |r|
       team_score += r.normalized_score
-      RankingAssignment.new(power_ranking_id: pw.id, runner_id: r.runner_id).save
+      RankingAssignment.new(power_ranking_id: pw.id, runner_id: r.runner_id, runner_gv_id: r.id).save
     end
     if team_score > 0
       pw.total_score = team_score

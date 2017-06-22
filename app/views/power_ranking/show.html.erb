@@ -1,0 +1,29 @@
+<h1>High School Power Ranking</h1>
+<hr>
+
+<% @ranking_classes.each do |ranking_class| %>
+  <h2><%= ranking_class %></h2>
+  <% i = 1 %>
+  <table>
+  <% @rankings_hash[ranking_class].each do |ranking| %>
+    <tr>
+      <td> <%= i %> </td>
+      <td>
+        <b><%= ranking.school %>(<%= ranking.total_score.round(3) %>)</b><br>
+        <% first_time = true %>
+        <% @runners_hash["#{ranking.school}:#{ranking_class}"].each do |r| %>
+          <%if first_time == true %>
+            <% first_time = false %>
+          <% else %>
+            ,&nbsp
+          <% end %>
+          <%= link_to "#{r.firstname} #{r.surname}", runners_show_path(id: r.id, calc_id: @calc_run_id) %>
+          (<%= r.normalized_score.round(3) %>)
+        <% end %>
+      <td>
+    </tr>
+    <% i += 1 %>
+  <% end %>
+  </table>
+  
+<% end %>
