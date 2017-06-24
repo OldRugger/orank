@@ -3,7 +3,7 @@
   <table>
     <tr>
       <th class=calc_run_left_header ><%= @course %> Rankings </th>
-      <th class=calc_run_right_header >Calculation Date: <%= @calc_run.date %></th>
+      <th class=calc_run_right_header >Calculation Date: <%= link_to @calc_run.date, @calc_run %></th>
    </tr>
   </table>
   <hr>
@@ -25,7 +25,7 @@
           <tr>
             <td>
               <br><br>
-              <b>High School Power Rankings</b>
+              <b><%= link_to 'High School Power Rankings', power_ranking_show_path(id: @calc_run.id) %> </b>
               <br><br>
 			        <p><b> <%= link_to 'All Results', calc_runs_show_all_path(id: @calc_run.id) %> </b>
  			        <p><%= link_to 'Back', :back %>

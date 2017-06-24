@@ -1,0 +1,31 @@
+// Place all the styles related to the power_ranking controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+.hs_power {
+  width:100%;
+}
+.power table {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+h2 {
+  text-align: center;
+}
+.power_rankings {
+  width: 50%;
+}
+.description{
+  vertical-align: text-top;
+}
+.place {
+  vertical-align: text-top;
+  width: 20px;
+  text-align: center;
+  font-weight: bold;
+}
+.calc_run_left_header {
+  text-align: left;
+}
+.calc_run_right_header {
+  text-align: right;
+}

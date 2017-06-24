@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170529123021) do
+ActiveRecord::Schema.define(version: 20170620235757) do
 
   create_table "calc_results", force: :cascade do |t|
     t.float    "float_time"
@@ -58,6 +58,12 @@ ActiveRecord::Schema.define(version: 20170529123021) do
     t.datetime "updated_at", null: false
   end
 
+# Could not dump table "power_rankings" because of following NoMethodError
+#   undefined method `[]' for nil:NilClass
+
+# Could not dump table "ranking_assignments" because of following NoMethodError
+#   undefined method `[]' for nil:NilClass
+
   create_table "results", force: :cascade do |t|
     t.time     "time"
     t.float    "float_time"
@@ -86,8 +92,9 @@ ActiveRecord::Schema.define(version: 20170529123021) do
     t.integer  "races"
     t.integer  "calc_run_id"
     t.integer  "runner_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+    t.float    "normalized_score"
   end
 
   add_index "runner_gvs", ["calc_run_id"], name: "index_runner_gvs_on_calc_run_id"
