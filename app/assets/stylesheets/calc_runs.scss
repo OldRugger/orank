@@ -17,6 +17,7 @@
   }
   .index {
     width: 25%;
+    padding-left: 10px;
     .filter {
       text-align: center;
     }
@@ -52,9 +53,11 @@
 }
 .calc_run_left_header {
   text-align: left;
+  padding-left: 10px
 }
 .calc_run_right_header {
   text-align: right;
+  padding-right: 10px
 }
 #show_all {
   th {

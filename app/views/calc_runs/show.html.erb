@@ -37,7 +37,7 @@
       <td>
         <h2> Detailed <%= @course %> Course Results </h2>
         <table class=course_details>
-          <tr><th class=rank>Rank</th><th class=runner>Runner</th><th class=club>Club</th><th class=gender></th><th class=score >score</th><th class=races>races</th></tr>
+          <tr><th class=rank>Rank</th><th class=runner>Runner</th><th class=club>Club</th><th class=gender></th><th class=score >Score</th><th class=races>Races</th></tr>
           <% current_gender = nil; place = 0 %>
           <% @runners.each do |r| %>
             <% if current_gender == nil %>
@@ -47,7 +47,9 @@
               <% place = 0 %>
               </table>
               <table class=course_details
-                <tr><th class=rank>Rank</th><th class=runner>Runner</th><th class=club>Club</th><th class=gender></th><th class=rank >score</th><th class=rank>races</th></tr>
+                <tr><th class=rank>Rank</th><th class=runner>Runner</th><th class=club>Club</th><th class=gender></th><th class=rank >Score</th>
+                 <th class=rank>Races</th>
+                </tr>
             <% end %>
             <tr>
               <td class=rank><%= place += 1 %> </td>
