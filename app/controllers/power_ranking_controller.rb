@@ -1,6 +1,7 @@
 class PowerRankingController < ApplicationController
   def show
     @calc_run_id = params[:id]
+    @calc_run = CalcRun.find(@calc_run_id)
     @ranking_classes = ['Varsity', 'Junior Varsity', 'Intermediate']
     @rankings_hash = Hash.new
     @runners_hash = Hash.new

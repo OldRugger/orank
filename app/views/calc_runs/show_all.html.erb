@@ -4,7 +4,7 @@
     <tr>
       <% @meet = Meet.find(@meet_id) %>
       <th class=calc_run_left_header ><%= "#{@meet.name} - #{@meet.date}" %> </th>
-      <th class=calc_run_right_header >Calculation Date: <%= @calc_run.date %></th>
+      <th class=calc_run_right_header >Calculation Date: <%= link_to @calc_run.date, @calc_run %></th>
    </tr>
   </table>
   <hr>
@@ -48,7 +48,9 @@
         <% end %>
         <tr>
           <td><%= i %></td>
-          <td><%= "#{d.firstname} #{d.surname}" %></td>
+          <td>
+            <%= link_to "#{d.firstname} #{d.surname}", runners_show_path(:id => d.runner_id, :calc_id => @calc_run.id)  %>
+          </td>
           <td><%= d.club_description %></td>
           <td><%= d.float_time.round(2) %></td>
           <td><%= d.score.round(2) %></td>

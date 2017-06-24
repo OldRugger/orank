@@ -3,7 +3,7 @@
   <table>
     <tr>
       <td class=runner_left_header ><b><%= "#{@runner.firstname} #{@runner.surname}" %></b> </td>
-      <td class=runner_right_header ><b>Calculation Date: <%= @calc_run.date %></b></td>
+      <td class=runner_right_header ><b>Calculation Date: <%= link_to @calc_run.date, @calc_run %></b></td>
    </tr>
   </table>
   <hr>

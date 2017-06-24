@@ -271,13 +271,13 @@ class CalculateResults
   
   def create_power_rankings
     Rails.logger.info("--> create power rankings")
-    # varsity
-    exclude = create_power_ranking_by_class("Varsity", ['Red','Green','Brown'], nil)
-    exclude = create_power_ranking_by_class("Junior Varsity", ['Orange'], exclude)
-    create_power_ranking_by_class("Intermediate", ['Yellow'], exclude)
+    @exclude = []
+    create_power_ranking_by_class("Varsity", ['Red','Green','Brown'])
+    create_power_ranking_by_class("Junior Varsity", ['Orange'])
+    create_power_ranking_by_class("Intermediate", ['Yellow'])
   end
   
-  def create_power_ranking_by_class(ranking_class, courses, exclude)
+  def create_power_ranking_by_class(ranking_class, courses)
     Rails.logger.info("----> #{ranking_class}")
     schools = RunnerGv.joins(:runner)
                .where(calc_run_id: @calc_run_id, course: courses)
@@ -285,25 +285,28 @@ class CalculateResults
                    .where("races > 1")
                      .uniq.pluck('runners.club_description')
     schools.each do |school|
-      calc_schools_ranking(school, courses, ranking_class, exclude)
+      calc_schools_ranking(school, courses, ranking_class)
     end
   end
   
-  def calc_schools_ranking(school, courses, ranking_class, exclude)
-    exclude = []
+  def calc_schools_ranking(school, courses, ranking_class)
+    puts "exclude #{@exclude}"
     results = RunnerGv.joins(:runner)
                 .where(calc_run_id: @calc_run_id, course: courses, 'runners.club_description': school)
                   .where('races > 1')
-                    .where.not(normalized_score: nil)
+                    .where.not(normalized_score: nil, runner_id: @exclude)
                       .order(normalized_score: :desc)
                         .limit(5)
-    return exclude if results.count == 0
+    
+    # results.where.not(runner_id: @exclude)
+    return if results.count == 0
     team_score = 0
     pw = PowerRanking.new(calc_run_id: @calc_run_id, school: school, ranking_class: ranking_class)
     pw.save
     results.each do |r|
       team_score += r.normalized_score
       RankingAssignment.new(power_ranking_id: pw.id, runner_id: r.runner_id, runner_gv_id: r.id).save
+      @exclude << r.runner_id
     end
     if team_score > 0
       pw.total_score = team_score
