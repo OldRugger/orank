@@ -40,20 +40,20 @@
           <% if save_course %>
             </table>
           <% end %>
-          <b id="<%= d.course %>"><%= d.course %></b> <a href="#">top</a><br>
+          <b id="<%= d.course %>"><%= d.course %></b> - <a href="#">top</a><br>
           Length = <%= d.length %>, Climb = <% d.climb %>, Controls = <%= d.controls %>, CGV = <%= d.course_cgv.round(3) %>
           <table>
-            <tr><th>Pace</th><th>Name</th><th>Club</th><th>Time<br>(in minutes)</th><th>score</th></tr>
+            <tr><th>Place</th><th>Name</th><th>Club</th><th>Time<br>(in minutes)</th><th>Score</th></tr>
           <% save_course = d.course %>
         <% end %>
         <tr>
-          <td><%= i %></td>
+          <td class=center><%= i %></td>
           <td>
             <%= link_to "#{d.firstname} #{d.surname}", runners_show_path(:id => d.runner_id, :calc_id => @calc_run.id)  %>
           </td>
           <td><%= d.club_description %></td>
-          <td><%= d.float_time.round(2) %></td>
-          <td><%= d.score.round(2) %></td>
+          <td class=center><%= d.float_time.round(2) %></td>
+          <td class=center><%= d.score.round(2) %></td>
         <tr>
         <% i += 1 %>
     

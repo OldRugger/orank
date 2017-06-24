@@ -63,8 +63,10 @@
           <% @calc_results.each do |r| %>
             <tr>
               <td class=center ><%= r.meet_date %></td>
-              <td><%= link_to r.meet_name, controller: 'meets', action: 'show', id: r.meet_id %></td>
-              <td><%= r.course %></td>
+              <td>
+                <%= link_to r.meet_name, calc_runs_show_all_path(id: @calc_run.id, meet_id: r.meet_id) %>
+              </td>
+              <td class=center><%= r.course %></td>
               <td class=center><%= r.length %></td>
               <td class=center><%= r.climb %></td>
               <td class=center><%= r.time.round(2) %></td>
