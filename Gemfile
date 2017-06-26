@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'bootstrap-datepicker-rails'
 gem 'carrierwave'
+gem 'chartkick'
 gem 'jquery-rails'
 gem 'lru_redux'
 gem 'rails', '4.2.7.1'
