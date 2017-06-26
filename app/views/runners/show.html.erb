@@ -36,6 +36,8 @@
               Races
             </th>
           </tr>
+          <% data = Hash.new  %>
+          <% colors = [] %>
           <% @rankings.each do |r| %>
             <tr>
               <td>
@@ -47,9 +49,15 @@
               <td class=center>
                 <%= r.races %>
               </td>
+              <% data[r.course] = r.races %>
+              <% color = r.course == "Sprint" ? "purple" : r.course.downcase %>
+              <% colors << color %>
             </tr>
           
           <% end %>
+          <tr><td colspan=3 >
+            <%= pie_chart data, :library => {:colors=> colors }, width: "330px", height: "185px" %>
+          </td></tr>
         </table>
         <br><br>
         <p><%= link_to 'Back', :back %>
@@ -60,6 +68,7 @@
           <tr>
             <th>Date</th><th>Meet</th><th>Course</th><th>Length</th><th>Climb</th><th>Time<br>(Minutes)</th><th>Place</th><th>Score</th>
           </tr>
+          <% data = Hash.new %>
           <% @calc_results.each do |r| %>
             <tr>
               <td class=center ><%= r.meet_date %></td>
@@ -73,7 +82,11 @@
               <td class=center><%= r.place %></td>
               <td class=center><%= r.score.round(3) %></td>
             </tr>
+            <% data["#{r.meet_name} (#{r.meet_date[6..-1]})"] = r.place %>
           <% end %>
+          <tr><td colspan = 8 >
+             <%= line_chart data,  title: "Finish Place" %>
+          </td><tr>
         </table>
       </td>
     </tr>
