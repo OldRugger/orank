@@ -3,3 +3,5 @@ APP_CONFIG.symbolize_keys!
 BUILD = `git rev-parse --short HEAD`
 APP_VERSION = '2.0.beta'
 COURSES = ['Red', 'Green', 'Brown', 'Orange', 'Yellow', 'Sprint'].freeze
+SPEED_SPLIT = 888
+TIME_LOST_SPLIT = 999
