@@ -75,8 +75,7 @@ class CalcRunsController < ApplicationController
                                     when  'Red'   then 1
                                     else 0
                                   end ")
-
-      
+    binding.pry
   end
   
   def create

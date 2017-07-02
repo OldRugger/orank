@@ -5,6 +5,7 @@ class AnalyzeSplits
   def perform(meet_id)
     @meet_id = meet_id
     COURSES.each do |course|
+      Rails.logger.info("Analyze splits #{Meet.find(meet_id).name} - #{course}")
       process_course(course)
     end
   end
