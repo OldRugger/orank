@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
 
+  get 'split_course/index'
+
+  get 'split_course/show'
+
   get 'power_ranking/show'
 
   get 'runners/show'

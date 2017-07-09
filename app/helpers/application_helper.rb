@@ -3,6 +3,7 @@ module ApplicationHelper
 
   # calculate hamonic mean for list of values
   def get_harmonic_mean(score_list)
+    return 0 if score_list.size == 0
     sum = 0
     score_list.each  do | score |
       sum += (1.0/score)

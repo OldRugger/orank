@@ -1,0 +1,26 @@
+// Place all the styles related to the split_course controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+.show_splits {
+  table {
+    width: 100%;
+  }
+  .split_details {
+    border-collapse: collapse;
+
+    width: 94%;
+    margin: 3%;
+    th {
+      background-color: #A6BA65;
+    }
+    .time {
+      text-align: center;
+    }
+    .lost_time {
+      text-align: center;
+      background-color: PaleVioletRed;
+    }
+
+  }
+    
+}

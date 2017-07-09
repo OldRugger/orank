@@ -1,0 +1,63 @@
+<div class = show_splits>
+  <hr>
+  <table>
+    <tr>
+      <th class=calc_run_left_header >GAOC Split Analysis </th>
+      <th class=calc_run_right_header > <%= @meet.name %> (<%= @meet.date %>) <%= @split_course.course %></th>
+   </tr>
+  </table>
+  <hr>
+  <table class = split_details border=1>
+    <tr>
+      <th rowspan=2 >
+        Runner
+      </th>
+      <th rowspan=2>
+        Speed
+      </th>
+      <th rowspan=2>
+        Time Lost
+      </th>
+      <th colspan = <%= "#{@split_course.controls + 1}" %>>
+        Controls
+      </th>
+
+    </tr>
+    <tr>
+      <% @split_course.controls.times do |i|%>
+        <th><%= "#{i+1}" %></th>
+      <% end %>
+      <th>Final</th>
+    </tr>
+    <% @runner_splits.each do |r| %>
+      <% next if r.start_punch == nil %>
+      <tr>
+        <td rowspan=2><%= Runner.find(r.runner_id).name %></td>
+        <td rowspan=2 class=time><%= (r.speed * 100).round(2) %></td>
+        <td rowspan=2 class=time><%= -r.lost_time.round(2) %></td>
+        <% @split_course.controls.times do |i| %>
+          <td class=time><%= Split.where(split_runner_id: r.id, control: (i+1)).first.current_time.round(2) %></td>
+        <% end %>
+        <td class=time><%= Split.where(split_runner_id: r.id, control: FINAL_SPLIT).first.current_time.round(2) %></td>
+      </tr>
+      <tr>
+        <% @split_course.controls.times do |i| %>
+          <% s = Split.where(split_runner_id: r.id, control: (i+1)).first %>
+          <% if s.lost_time %>
+            <td class = lost_time>
+              <span title="lost time: <%= -s.time_diff.round(2)%>" ><%= s.time.round(2) %></span>
+            </td>
+          <% else %>
+            <td class = time>
+              <%= s.time.round(2) %></span>
+            </td>
+          <% end %>
+          </td>
+        <% end %>
+        <td class=time><%= Split.where(split_runner_id: r.id, control: FINAL_SPLIT).first.time.round(2) %></td>
+
+      </tr>
+    <% end %>
+  </table>
+</div>
+<%= debug(@runner_splits) %>

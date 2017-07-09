@@ -34,8 +34,8 @@ class Result < ActiveRecord::Base
   end
 
   def clear_existing_results(meet_id)
-    Result.where(meet_id: meet_id).delete_all
-    SplitCourse.where(meet_id: meet_id).delete_all
+    Result.where(meet_id: meet_id).destroy_all
+    SplitCourse.where(meet_id: meet_id).destroy_all
   end
 
   def load_result(meet_id, row, file_type)

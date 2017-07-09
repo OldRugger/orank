@@ -15,108 +15,124 @@ class AnalyzeSplits
   def process_course(course)
     @split_course = SplitCourse.where(meet_id: @meet_id, course: course).first
     return if @split_course == nil
+    @split_course.controls = Result.where(meet_id: @meet_id, course: course).first.controls
+    @split_course.save
     process_split_course(course)
   end
   
   def process_split_course(course)
+    puts "process_split_course"
     controls = Result.where(meet_id: 13, course: course).first.controls
     build_baselines(controls)
-    calculate_split_results(controls)
+    calculate_split_results
   end
   
   def build_baselines(controls)
-    control_splits = get_splits_by_control
+    puts "build_baselines"
+    control_splits = get_splits_by_control(controls)
     build_super_heroes(control_splits, controls)
   end
 
   def build_super_heroes(control_splits, controls)
+    puts "build_super_heroes"
     superman = Runner.find_or_create_by(surname: 'Admin', firstname: 'Superman')
+    super_runner = SplitRunner.find_or_create_by(split_course_id: @split_course.id, runner_id: superman.id)
     batman = Runner.find_or_create_by(surname: 'Admin', firstname: 'Batman')
+    bat_runner = SplitRunner.find_or_create_by(split_course_id: @split_course.id, runner_id: batman.id)
+    Split.where(split_runner_id: [super_runner.id, bat_runner.id]).destroy_all
     controls.times do |i|
       control = i+1
-      Split.new(split_course_id: @split_course.id,
+      Split.create(split_runner_id: super_runner.id,
           control: control,
-          time: control_splits[control][0],
-          runner_id: superman.id).save
+          time: control_splits[control][0])
+          
       avg_time = get_harmonic_mean(control_splits[control])
-      Split.new(split_course_id: @split_course.id,
+      Split.create(split_runner_id: bat_runner.id,
           control: control,
-          time: avg_time,
-          runner_id: batman.id).save
+          time: avg_time)
     end
+    Split.create(split_runner_id: super_runner.id,
+        control: FINAL_SPLIT,
+        time: control_splits[FINAL_SPLIT][0])
+        
+    avg_time = get_harmonic_mean(control_splits[FINAL_SPLIT])
+    Split.create(split_runner_id: bat_runner.id,
+        control: FINAL_SPLIT,
+        time: avg_time)
+    
   end
 
   
-  def get_splits_by_control
+  def get_splits_by_control(controls)
+    puts 'get_splits_by_control'
     control_splits = Hash.new
-    splits = Split.where(split_course_id: @split_course.id).order(:control, :time)
+    splits = SplitRunner.joins(:splits)
+                .select('splits.control, splits.time')
+                  .where(split_course_id: @split_course.id)
+                    .order('splits.control', 'splits.time')
     splits.each do |s|
+      next if s.control > controls && s.control != FINAL_SPLIT
       if control_splits[s.control] == nil
         control_splits[s.control] = []
       end
       control_splits[s.control] << s.time
+      
     end
     control_splits
   end
   
-  def calculate_split_results(controls)
-    batman = Runner.find_or_create_by(surname: 'Admin', firstname: 'Batman')
-    batman_splits = Split.where(split_course_id: @split_course.id,
-                                runner_id: batman.id).pluck(:time)
-    runners = Split.where(split_course_id: @split_course.id)
-                     .select(:runner_id).distinct
-    runners.each do |r|
-      process_runner_splits(r.runner_id, batman_splits, controls)
+  def calculate_split_results
+    puts 'calculate_split_results'
+    batman = Runner.where(surname: 'Admin', firstname: 'Batman').first
+    bat_runner = SplitRunner.where(runner_id: batman.id).first
+    batman_splits = Hash.new
+    Split.where(split_runner_id: bat_runner).order(:control).each do |s|
+      batman_splits[s.control] = s.time
+    end
+    runners = SplitRunner.where(split_course_id: @split_course.id).pluck(:id)
+    runners.each do |id|
+      process_runner_splits(id, batman_splits)
     end
   end
   
-  def process_runner_splits(runner_id, batman_splits, controls)
-    runner_splits = Split.where(split_course_id: @split_course.id,
-                                runner_id: runner_id).order(:control)
-    speed = calculate_runner_speed(runner_splits, batman_splits, controls)
-    time_lost = update_time_gained_lost(runner_splits, batman_splits, speed, controls)
-    create_control_splits(runner_id, speed, time_lost)
+  def process_runner_splits(id, batman_splits)
+    puts "procss_runner_splits #{id}"
+    runner_splits = Split.where(split_runner_id: id).order(:control)
+    speed = calculate_runner_speed(runner_splits, batman_splits)
+    lost_time = update_time_gained_lost(runner_splits, batman_splits, speed)
+    update_split_runner(id, speed, lost_time)
   end
   
-  def create_control_splits(runner_id, speed, time_lost)
-    Split.new(split_course_id: @split_course.id,
-          control: SPEED_SPLIT,
-          time: time_lost,
-          runner_id: runner_id).save
-    Split.new(split_course_id: @split_course.id,
-          control: TIME_LOST_SPLIT,
-          time: time_lost,
-          runner_id: runner_id).save
+  def update_split_runner(id, speed, lost_time)
+    split_runner = SplitRunner.find(id)
+    split_runner.lost_time = lost_time
+    split_runner.speed = speed
+    split_runner.save
   end
   
-  def update_time_gained_lost(runner_splits, batman_splits, speed, controls)
+  def update_time_gained_lost(runner_splits, batman_splits, speed)
     total_time_lost = 0.0
     runner_splits.each do |s|
-      if s.time
-        expected = batman_splits[s.control-1] / speed
+      if s.time && batman_splits[s.control]
+        expected = batman_splits[s.control] / speed
         delta = expected - s.time
         if (-delta) > (s.time * 0.10)
           total_time_lost += delta
+          s.lost_time = true
         end
         s.time_diff = delta
         s.save
-      end
-      if s.control == controls
-        break
       end
     end
     total_time_lost
   end
   
-  def calculate_runner_speed(runner_splits, batman_splits, controls)
+  def calculate_runner_speed(runner_splits, batman_splits)
     runner_scores = []
     runner_splits.each do |s|
-      if s.time
-        performance = batman_splits[s.control-1] / s.time
+      if s.time && batman_splits[s.control]
+        performance = batman_splits[s.control] / s.time
         runner_scores << performance
-      end
-      if s.control == controls
-        break
       end
     end
     runners_speed = get_runners_speed(runner_scores)
