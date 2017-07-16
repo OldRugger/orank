@@ -1,4 +1,4 @@
- <div class=split_course >
+ <div class=show_splits >
   <hr>
   <table>
     <tr>
@@ -7,7 +7,7 @@
    </tr>
   </table>
   <hr>
-  <table>
+  <table class=index>
     <% curr_meet_id = nil %>
     <tr><th>Meet</th><th>Date</th><th>Splits</th></th>
     <% @split_courses.each do |split_course| %>
@@ -23,9 +23,9 @@
     <% end %>
     </td></tr>
   </table>
-  
+<p><%= link_to 'Back', :back %>
+<p>
 </div>
 
 
-<p><%= link_to 'Back', :back %>
-<p>
+

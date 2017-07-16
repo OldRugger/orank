@@ -2,23 +2,52 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 .show_splits {
+  p {
+    margin: 3%;
+  }
   table {
     width: 100%;
   }
+  .index {
+    width: 70%;
+    margin-left: 5%;
+    text-align: center;
+  }
+  .split_notes{
+    border-collapse: collapse;
+    width: 94%;
+    margin-left: 3%;
+  }
   .split_details {
     border-collapse: collapse;
-
     width: 94%;
-    margin: 3%;
+    margin-left: 3%;
+    margin-top: 2%;
     th {
       background-color: #A6BA65;
+    }
+    .even {
+      background-color: lightyellow;
+    }
+    .split {
+      border-bottom: solid black 2px;
     }
     .time {
       text-align: center;
     }
     .lost_time {
       text-align: center;
-      background-color: PaleVioletRed;
+      // text-shadow: 1px 1px 1px red;
+      background-color: #ff3333;
+    }
+    .first {
+      background-color: gold;
+    }
+    .second {
+      background-color: silver;
+    }
+    .third {
+      background-color: #CD7F32;
     }
 
   }

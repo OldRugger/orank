@@ -4,6 +4,8 @@ Rails.application.routes.draw do
 
   get 'split_course/show'
 
+  get 'split_course/show_runner'
+
   get 'power_ranking/show'
 
   get 'runners/show'
