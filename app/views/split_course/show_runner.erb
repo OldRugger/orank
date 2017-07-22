@@ -2,7 +2,7 @@
   <hr>
   <table>
     <tr>
-      <th class=calc_run_left_header >GAOC Split Analysis </th>
+      <th class=calc_run_left_header ><%= link_to 'GAOC Split Analysis', split_course_index_path %></th>
       <th class=calc_run_right_header > <%= @meet.name %> (<%= @meet.date %>) <%= @split_course.course %></th>
    </tr>
   </table>
@@ -31,7 +31,7 @@
     </tr>
     <tr>
       <td rowspan=3>
-        <%= Runner.find(@split_runner.runner_id).name %>
+        <b><%= Runner.find(@split_runner.runner_id).name %></b>
       </td>
       <td rowspan=3 class=time><%= (@split_runner.speed * 100).round(2) %></td>
       <td rowspan=3 class=time><%= -@split_runner.lost_time.round(2) %></td>
@@ -174,4 +174,9 @@
       </td>
     </tr>
   </table>
+  <p>
+    <%= link_to 'Back', :back %><br>
+    <%= link_to 'Home', calc_runs_path %>
+  </p>
+
 </div>

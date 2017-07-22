@@ -1,6 +1,6 @@
 class SplitCourseController < ApplicationController
   def index
-    @split_courses = SplitCourse.where(course: COURSES).order(:meet_id)
+    @split_courses = SplitCourse.where(course: COURSES).order(meet_id: :desc)
                             .order("case course
                                       when 'Sprint' then 7
                                       when 'Yellow' then 5

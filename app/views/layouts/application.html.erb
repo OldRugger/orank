@@ -10,7 +10,11 @@
 <body>
   <table class=app_header>
     <tr >
-      <td> <%= image_tag "GAOClogo.jpg", :style => "display: block;" %></td>
+      <td>
+        <%= link_to calc_runs_path do %>
+          <%= image_tag "GAOClogo.jpg", :style => "display: block;" %>
+        <% end %>
+      </td>
     </tr>
     <tr bgcolor=#A6BA65>
       <td height=30><b>&nbsp;GAOC Local Meet Ranking System</b></td>

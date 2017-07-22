@@ -15,7 +15,6 @@ class AnalyzeSplits
   def process_course(course)
     @split_course = SplitCourse.where(meet_id: @meet_id, course: course).first
     return if @split_course == nil
-    @split_course.controls = Result.where(meet_id: @meet_id, course: course).first.controls
     @split_course.save
     set_place_for_splits
     process_split_course(course)
@@ -87,7 +86,8 @@ class AnalyzeSplits
   
   def process_split_course(course)
     puts "process_split_course"
-    controls = Result.where(meet_id: 13, course: course).first.controls
+    controls = @split_course.controls
+    puts "controls #{controls}"
     build_baselines(controls)
     calculate_split_results
   end
@@ -136,7 +136,6 @@ class AnalyzeSplits
         current_time: bat_time,
         control: FINAL_SPLIT,
         time: avg_time)
-    
   end
 
   
@@ -173,7 +172,6 @@ class AnalyzeSplits
   end
   
   def process_runner_splits(id, batman_splits)
-    puts "procss_runner_splits #{id}"
     runner_splits = Split.where(split_runner_id: id).order(:control)
     speed = calculate_runner_speed(runner_splits, batman_splits)
     lost_time = update_time_gained_lost(runner_splits, batman_splits, speed)
