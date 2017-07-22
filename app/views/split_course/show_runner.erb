@@ -100,21 +100,26 @@
       <% end %>
       <% s = Split.where(split_runner_id: @split_runner.id, control: FINAL_SPLIT).first %>
       <% split_data['Final'] = s.time_diff %>
-      <td
-        <% case s.split_place %>
-        <%   when 1 %>
-          class = "time first"
-        <%   when 2 %>
-          class = "time second"
-        <%   when 3 %>
-          class = "time third"
-        <%   else   %>
-          class = "time"
-        <% end %>
-      >
-        <%= s.time.round(2) %>(<%= s.split_place %>)
-      </td>
-  
+      <% if s.lost_time %>
+        <td class = "lost_time">
+          <span title="lost time: <%= -s.time_diff.round(2)%>" ><%= s.time.round(2) %>(<%= s.split_place %>)</span>
+        </td>
+      <% else %>
+        <td
+          <% case s.split_place %>
+          <%   when 1 %>
+            class = "time first"
+          <%   when 2 %>
+            class = "time second"
+          <%   when 3 %>
+            class = "time third"
+          <%   else   %>
+            class = "time"
+          <% end %>
+        >
+          <%= s.time.round(2) %>(<%= s.split_place %>)
+        </td>
+      <% end %>
     </tr>
     <% first = true %>
     <% [@superman, @batman].each do | hero | %>

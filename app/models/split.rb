@@ -1,4 +1,3 @@
-
 class Split < ActiveRecord::Base
   belongs_to :split_runner
   

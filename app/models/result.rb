@@ -95,5 +95,17 @@ class Result < ActiveRecord::Base
     return unless result
     result.course = 'Sprint'
     result.save
+    update_split_runner(result)
+  end
+  
+  def update_split_runner(result)
+    @source_split_course = SplitCourse.where(meet_id: result.meet_id, course: 'Yellow').first
+    @dest_split_course ||= split_course = SplitCourse.find_or_create_by(meet_id: result.meet_id,
+                                                 controls: @source_split_course.controls,
+                                                 course: result.course)
+    split_runner = SplitRunner.where(runner_id: result.runner_id,
+                                     split_course_id: @source_split_course.id).first
+    split_runner.split_course_id = @dest_split_course.id
+    split_runner.save
   end
 end
