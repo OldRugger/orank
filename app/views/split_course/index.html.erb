@@ -19,7 +19,7 @@
         <% meet = Meet.find(split_course.meet_id) %>
         <tr><td><%= meet.name %></td><td><%= meet.date %></td><td>
       <% end %>
-      <%= link_to split_course.course, split_course_show_path(id: split_course.id) %>
+      
     <% end %>
     </td></tr>
   </table>

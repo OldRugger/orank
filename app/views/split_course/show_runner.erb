@@ -31,7 +31,7 @@
     </tr>
     <tr>
       <td rowspan=3>
-        <b><%= Runner.find(@split_runner.runner_id).name %></b>
+        <%= link_to Runner.find(@split_runner.runner_id).name, split_course_show_runner_all_path(runner_id: @split_runner.runner_id) %>
       </td>
       <td rowspan=3 class=time><%= (@split_runner.speed * 100).round(2) %></td>
       <td rowspan=3 class=time><%= -@split_runner.lost_time.round(2) %></td>

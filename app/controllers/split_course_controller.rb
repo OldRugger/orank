@@ -30,6 +30,13 @@ class SplitCourseController < ApplicationController
     end
   end
   
+  def show_runner_all
+    @runner = Runner.find(params[:runner_id])
+    split_course_ids = SplitRunner.where(runner_id: @runner.id).order(split_course_id: :desc).all.pluck(:split_course_id)
+    @split_courses = SplitCourse.where(id: split_course_ids).order(meet_id: :desc)
+    @last_calc_id = CalcRun.where(publish: true).last.id
+  end
+  
   private
   
   def get_runner_split_data(split_runner_id, fastest_splits)
