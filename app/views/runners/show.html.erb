@@ -60,8 +60,10 @@
           </td></tr>
         </table>
         <br><br>
-        <p><%= link_to 'Back', :back %>
-        <p><%= link_to 'Home', calc_runs_path %>
+        <p><b><%= link_to 'Splits', split_course_show_runner_all_path(runner_id: @runner.id) %></b></p>
+
+        <p><%= link_to 'Back', :back %></p>
+        <p><%= link_to 'Home', calc_runs_path %></p>
       </td>
       <td class=runner_results>
         <table >

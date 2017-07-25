@@ -65,7 +65,8 @@
           <% end %>
         
         >
-          <%= Split.where(split_runner_id: split_runner.id, control: FINAL_SPLIT).first.current_time.round(2) %>
+          <% s = Split.where(split_runner_id: split_runner.id, control: FINAL_SPLIT).first %>
+          <%= s.current_time.round(2) %>(<%= split_runner.place.to_i %>)
         </td>
       </tr>
       <tr>
