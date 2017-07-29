@@ -75,8 +75,7 @@ class CalcRunsController < ApplicationController
                                     when  'Red'   then 1
                                     else 0
                                   end ")
-
-      
+    @split_courses = SplitCourse.where(meet_id: @meet_id).all
   end
   
   def create

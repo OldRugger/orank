@@ -1,0 +1,31 @@
+ <div class=show_splits >
+  <hr>
+  <table>
+    <tr>
+      <th class=calc_run_left_header >GAOC Split Analysis </th>
+      <th class=calc_run_right_header > <%= link_to 'Home', calc_runs_path %></th>
+   </tr>
+  </table>
+  <hr>
+  <table class=index>
+    <% curr_meet_id = nil %>
+    <tr><th>Meet</th><th>Date</th><th>Splits</th></th>
+    <% @split_courses.each do |split_course| %>
+      <% if split_course.meet_id != curr_meet_id %>
+        <% curr_meet_id =  split_course.meet_id %>
+        <% if curr_meet_id != nil %>
+          </td></tr>
+        <% end %>
+        <% meet = Meet.find(split_course.meet_id) %>
+        <tr><td><%= meet.name %></td><td><%= meet.date %></td><td>
+      <% end %>
+      <%= link_to split_course.course, split_course_show_path(id: split_course.id) %>
+    <% end %>
+    </td></tr>
+  </table>
+<p><%= link_to 'Back', :back %>
+<p>
+</div>
+
+
+

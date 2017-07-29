@@ -1,0 +1,141 @@
+<div class = show_splits>
+  <hr>
+  <table>
+    <tr>
+      <th class=calc_run_left_header ><%= link_to 'GAOC Split Analysis', split_course_index_path %></b></th>
+      <th class=calc_run_right_header > <%= @meet.name %> (<%= @meet.date %>) <%= @split_course.course %></th>
+   </tr>
+  </table>
+  <hr>
+  <table class = split_details border=1>
+    <tr>
+      <th rowspan=2 >
+        Runner
+      </th>
+      <th rowspan=2>
+        Speed
+      </th>
+      <th rowspan=2>
+        Time Lost
+      </th>
+      <th colspan = <%= "#{@split_course.controls + 1}" %>>
+        Controls
+      </th>
+
+    </tr>
+    <tr>
+      <% @split_course.controls.times do |i|%>
+        <th><%= "#{i+1}" %></th>
+      <% end %>
+      <th>Final</th>
+    </tr>
+    <% even = false %>
+    <% @runner_splits.each do |r| %>
+      <% next if r.start_punch == nil %>
+      <tr
+        <% if even %>
+          class = even
+        <% end %>
+      >
+        <td rowspan=2>
+          <%= link_to Runner.find(r.runner_id).name, split_course_show_runner_path(id: @split_course.id, runner_id: r.runner_id) %>
+        </td>
+        <td rowspan=2 class=time><%= (r.speed * 100).round(2) %></td>
+        <td rowspan=2 class=time><%= -r.lost_time.round(2) %></td>
+        <% @split_course.controls.times do |i| %>
+          <% s = Split.where(split_runner_id: r.id, control: (i+1)).first %>
+          <td
+            <% case s.current_place %>
+              <%   when 1 %>
+                class = "time first"
+              <%   when 2 %>
+                class = "time second"
+              <%   when 3 %>
+                class = "time third"
+              <%   else   %>
+                class = "time"
+            <% end %>
+          >
+            <%= s.current_time.round(2) %>(<%= s.current_place %>)
+          </td>
+        <% end %>
+        <td
+          <% case r.place %>
+            <%   when 1 %>
+              class = "time first"
+            <%   when 2 %>
+              class = "time second"
+            <%   when 3 %>
+              class = "time third"
+            <%   else   %>
+              class = "time"
+          <% end %>
+        
+        >
+          <%= Split.where(split_runner_id: r.id, control: FINAL_SPLIT).first.current_time.round(2) %>
+        </td>
+      </tr>
+      <tr
+        <% if even %>
+          class = even
+          <% even = false %>
+        <% else %>
+          <% even = true %>
+        <% end %>
+    
+      >
+        <% @split_course.controls.times do |i| %>
+          <% s = Split.where(split_runner_id: r.id, control: (i+1)).first %>
+          <% if s.lost_time %>
+            <td class = "split lost_time">
+              <span title="lost time: <%= -s.time_diff.round(2)%>" ><%= s.time.round(2) %>(<%= s.split_place %>)</span>
+            </td>
+          <% else %>
+            <td
+              <% case s.split_place %>
+              <%   when 1 %>
+                class = "split time first"
+              <%   when 2 %>
+                class = "split time second"
+              <%   when 3 %>
+                class = "split time third"
+              <%   else   %>
+                class = "split time"
+              <% end %>
+            >
+              <%= s.time.round(2) %>(<%= s.split_place %>)
+            </td>
+          <% end %>
+          </td>
+        <% end %>
+        <% s = Split.where(split_runner_id: r.id, control: FINAL_SPLIT).first %>
+        <% s = Split.where(split_runner_id: r.id, control: FINAL_SPLIT).first %>
+        <% if s.lost_time %>
+          <td class = "lost_time">
+            <span title="lost time: <%= -s.time_diff.round(2)%>" ><%= s.time.round(2) %>(<%= s.split_place %>)</span>
+          </td>
+        <% else %>
+          <td
+            <% case s.split_place %>
+            <%   when 1 %>
+              class = "split time first"
+            <%   when 2 %>
+              class = "split time second"
+            <%   when 3 %>
+              class = "split time third"
+            <%   else   %>
+              class = "split time"
+            <% end %>
+          >
+            <%= s.time.round(2) %>(<%= s.split_place %>)
+          </td>
+        <% end %>
+      </tr>
+    <% end %>
+  </table>
+  <p>
+    <%= link_to 'Back', :back %><br>
+    <%= link_to 'Home', calc_runs_path %>
+  </p>
+
+</div>

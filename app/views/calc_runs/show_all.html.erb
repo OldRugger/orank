@@ -40,7 +40,12 @@
           <% if save_course %>
             </table>
           <% end %>
-          <b id="<%= d.course %>"><%= d.course %></b> - <a href="#">top</a><br>
+          <b id="<%= d.course %>"><%= d.course %></b> - <a href="#">top</a>
+          <% split_course = @split_courses.where(course: 'Red').first %>
+          <% if split_course %>
+            Splits <%= split_course.id %>
+          <% end %>
+          <br>
           Length = <%= d.length %>, Climb = <% d.climb %>, Controls = <%= d.controls %>, CGV = <%= d.course_cgv.round(3) %>
           <table>
             <tr><th>Place</th><th>Name</th><th>Club</th><th>Time<br>(in minutes)</th><th>Score</th></tr>

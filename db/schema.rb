@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170620235757) do
+ActiveRecord::Schema.define(version: 20170630225934) do
 
   create_table "calc_results", force: :cascade do |t|
     t.float    "float_time"
@@ -111,5 +111,46 @@ ActiveRecord::Schema.define(version: 20170620235757) do
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
   end
+
+  create_table "split_courses", force: :cascade do |t|
+    t.integer  "meet_id"
+    t.string   "course"
+    t.integer  "controls"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "split_courses", ["meet_id"], name: "index_split_courses_on_meet_id"
+
+  create_table "split_runners", force: :cascade do |t|
+    t.integer  "split_course_id"
+    t.integer  "runner_id"
+    t.time     "start_punch"
+    t.time     "finish_punch"
+    t.float    "place"
+    t.float    "total_time"
+    t.float    "lost_time"
+    t.float    "speed"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "split_runners", ["runner_id"], name: "index_split_runners_on_runner_id"
+  add_index "split_runners", ["split_course_id"], name: "index_split_runners_on_split_course_id"
+
+  create_table "splits", force: :cascade do |t|
+    t.integer  "split_runner_id"
+    t.integer  "control"
+    t.float    "current_time"
+    t.integer  "current_place"
+    t.float    "time"
+    t.integer  "split_place"
+    t.float    "time_diff"
+    t.boolean  "lost_time"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "splits", ["split_runner_id"], name: "index_splits_on_split_runner_id"
 
 end

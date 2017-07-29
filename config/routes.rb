@@ -1,5 +1,13 @@
 Rails.application.routes.draw do
 
+  get 'split_course/index'
+
+  get 'split_course/show'
+
+  get 'split_course/show_runner'
+
+  get 'split_course/show_runner_all'
+
   get 'power_ranking/show'
 
   get 'runners/show'

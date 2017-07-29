@@ -1,8 +1,6 @@
 # Meets controller
 class MeetsController < ApplicationController
   before_filter :admin_required, only: %i(edit new)
-  def index
-  end
 
   def show
     @meet = Meet.find(params[:id])
@@ -16,9 +14,6 @@ class MeetsController < ApplicationController
     end
   end
 
-  def edit
-  end
-
   def new
     @meet = Meet.new
   end
@@ -27,6 +22,9 @@ class MeetsController < ApplicationController
     meet = create_meet
     Rails.logger.info("\nInporting data for #{meet.id}: #{meet.name} - #{meet.date}")
     Result.import(meet.id, meet_params[:input_file])
+    Thread.new do
+      AnalyzeSplits.new.perform(meet.id)
+    end
     redirect_to controller: 'meets', action: 'show', id: meet.id
   end
 
