@@ -1,13 +1,19 @@
 class SplitCourseController < ApplicationController
   def index
-    @split_courses = SplitCourse.where(course: COURSES).order(meet_id: :desc)
+    @split_courses = SplitCourse.all.order(meet_id: :desc)
                             .order("case course
-                                      when 'Sprint' then 7
-                                      when 'Yellow' then 5
-                                      when 'Orange' then 4
-                                      when 'Brown'  then 3
-                                      when 'Green'  then 2
-                                      when  'Red'   then 1
+                                      when 'White'    then 8
+                                      when 'Sprint'   then 7
+                                      when 'Yellow'   then 5
+                                      when 'Yellow-2' then 5
+                                      when 'Yellowx'  then 5
+                                      when 'Orange'   then 4
+                                      when 'Orange-2' then 4
+                                      when 'Orangex'  then 4
+                                      when 'Brown'    then 3
+                                      when 'Green'    then 2
+                                      when 'Red'      then 1
+                                      when 'Blue'     then 0
                                       else 0
                                     end ")
   end
