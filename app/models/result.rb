@@ -105,6 +105,7 @@ class Result < ActiveRecord::Base
                                                  course: result.course)
     split_runner = SplitRunner.where(runner_id: result.runner_id,
                                      split_course_id: @source_split_course.id).first
+    return unless split_runner
     split_runner.split_course_id = @dest_split_course.id
     split_runner.save
   end
