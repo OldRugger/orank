@@ -14,10 +14,10 @@
     <h3> <%= link_to meet.name, split_course_show_path(id: sc.id) %> <i><%= sc.course %></i> <%= meet.date %></h3>
     <table class = split_details_all border=1>
       <tr>
-         <th rowspan=2>
+        <th rowspan=2 class=speed>
           Speed
         </th>
-        <th rowspan=2>
+        <th rowspan=2 class=time_lost>
           Time Lost
         </th>
         <th colspan = <%= "#{sc.controls + 1}" %>>
