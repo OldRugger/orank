@@ -35,7 +35,7 @@ RSpec.describe MeetsController, type: :controller do
         expect(original_filename).to eql('OE0014.csv')
       end
       it 'should create runner records' do
-        expect(Runner.count).to eql(7)
+        expect(Runner.count).to eql(14)
       end
     end
   end
@@ -52,7 +52,7 @@ RSpec.describe MeetsController, type: :controller do
         expect(original_filename).to eql('OR.csv')
       end
       it 'should create runner records' do
-        expect(Runner.count).to eql(10)
+        expect(Runner.count).to eql(20)
       end
     end
   end
