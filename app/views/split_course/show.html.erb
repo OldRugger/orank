@@ -111,7 +111,7 @@
         <% s = Split.where(split_runner_id: r.id, control: FINAL_SPLIT).first %>
         <% s = Split.where(split_runner_id: r.id, control: FINAL_SPLIT).first %>
         <% if s.lost_time %>
-          <td class = "lost_time">
+          <td class = "split lost_time">
             <span title="lost time: <%= -s.time_diff.round(2)%>" ><%= s.time.round(2) %>(<%= s.split_place %>)</span>
           </td>
         <% else %>
