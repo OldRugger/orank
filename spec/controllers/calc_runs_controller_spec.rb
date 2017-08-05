@@ -2,18 +2,18 @@ require 'rails_helper'
 
 RSpec.describe CalcRunsController, type: :controller do
   before do
-    Meet.create(name: 'test meet OE0014 A',
-                date: Time.now.strftime('%m/%d/%Y'),
-                input_file: fixture_file_upload('test_data/OE0014.csv'))
-    Meet.create(name: 'test meet OE0014 B',
-                date: Time.now.strftime('%m/%d/%Y'),
-                input_file: fixture_file_upload('test_data/OE0014.csv'))
-    Meet.create(name: 'test meet Or A',
-                date: Time.now.strftime('%m/%d/%Y'),
-                input_file: fixture_file_upload('test_data/OR.csv'))
-    Meet.create(name: 'test meet Or B',
-                date: Time.now.strftime('%m/%d/%Y'),
-                input_file: fixture_file_upload('test_data/OR.csv'))
+    meet = Meet.create(name: 'test meet OE0014 A',
+                date: Time.now.strftime('%m/%d/%Y'))
+    Result.import(meet.id,fixture_file_upload('test_data/OE0014.csv'))
+    meet = Meet.create(name: 'test meet OE0014 B',
+                date: Time.now.strftime('%m/%d/%Y'))
+    Result.import(meet.id, fixture_file_upload('test_data/OE0014.csv'))
+    meet = Meet.create(name: 'test meet Or A',
+                date: Time.now.strftime('%m/%d/%Y'))
+    Result.import(meet.id, fixture_file_upload('test_data/OR.csv'))
+    meet = Meet.create(name: 'test meet Or B',
+                date: Time.now.strftime('%m/%d/%Y'))
+    Result.import(meet.id, fixture_file_upload('test_data/OR.csv'))
     calc_run = CalcRun.new(status: 'in-process', date: DateTime.now.to_date )
     calc_run.save
     start = Time.now
@@ -74,5 +74,18 @@ RSpec.describe CalcRunsController, type: :controller do
     end
   end
     
-
+  describe 'GET #show_all to return calc details' do
+    it "should do something I'm sure" do
+      calc_run = CalcRun.last
+      get :show_all, id: calc_run.id
+      expect(assigns(:calc_details).last.float_time).to eql 75.53333333333333
+    end
+  end
+  
+  describe 'PUT create call run' do
+    it "should redirect to admin index" do
+      put :create
+      expect(response.body).to include('redirected')
+    end
+  end
 end

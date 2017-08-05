@@ -37,6 +37,9 @@ RSpec.describe MeetsController, type: :controller do
       it 'should create runner records' do
         expect(Runner.count).to eql(14)
       end
+      it 'should update runners card_id' do
+        expect(Runner.where(card_id: 20262521).first.name).to eql('Anne Doe71')
+      end
     end
   end
   
@@ -53,6 +56,9 @@ RSpec.describe MeetsController, type: :controller do
       end
       it 'should create runner records' do
         expect(Runner.count).to eql(20)
+      end
+      it 'should update runners card_id' do
+        expect(Runner.where(card_id: 20645041).first.name).to eql('Kevon DoeG10')
       end
     end
   end
