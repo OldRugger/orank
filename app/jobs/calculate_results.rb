@@ -97,7 +97,6 @@ class CalculateResults
     end
     # return 0 if score_list.size < 3
     course_cgv = get_harmonic_mean(score_list)
-    # puts "#course cgv #{course_cgv}"
     delta = update_meet_course_results(meet_id, results, course_cgv, course, runner_times)
   end
   
@@ -290,7 +289,6 @@ class CalculateResults
   end
   
   def calc_schools_ranking(school, courses, ranking_class)
-    puts "exclude #{@exclude}"
     results = RunnerGv.joins(:runner)
                 .where(calc_run_id: @calc_run_id, course: courses, 'runners.club_description': school)
                   .where('races > 1')

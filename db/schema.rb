@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170630225934) do
+ActiveRecord::Schema.define(version: 20170801224115) do
 
   create_table "calc_results", force: :cascade do |t|
     t.float    "float_time"
@@ -58,28 +58,11 @@ ActiveRecord::Schema.define(version: 20170630225934) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "power_rankings", force: :cascade do |t|
-    t.string   "school"
-    t.string   "ranking_class"
-    t.float    "total_score"
-    t.integer  "calc_run_id"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-  end
+# Could not dump table "power_rankings" because of following NoMethodError
+#   undefined method `[]' for nil:NilClass
 
-  add_index "power_rankings", ["calc_run_id"], name: "index_power_rankings_on_calc_run_id"
-
-  create_table "ranking_assignments", force: :cascade do |t|
-    t.integer  "power_ranking_id"
-    t.integer  "runner_id"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
-    t.integer  "runner_gv_id"
-  end
-
-  add_index "ranking_assignments", ["power_ranking_id"], name: "index_ranking_assignments_on_power_ranking_id"
-  add_index "ranking_assignments", ["runner_gv_id"], name: "index_ranking_assignments_on_runner_gv_id"
-  add_index "ranking_assignments", ["runner_id"], name: "index_ranking_assignments_on_runner_id"
+# Could not dump table "ranking_assignments" because of following NoMethodError
+#   undefined method `[]' for nil:NilClass
 
   create_table "results", force: :cascade do |t|
     t.time     "time"
@@ -97,6 +80,7 @@ ActiveRecord::Schema.define(version: 20170630225934) do
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
     t.string   "gender"
+    t.string   "chip_no"
   end
 
   add_index "results", ["meet_id"], name: "index_results_on_meet_id"
