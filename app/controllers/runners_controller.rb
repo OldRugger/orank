@@ -4,7 +4,7 @@ class RunnersController < ApplicationController
     @runner   = Runner.find(params[:id])
     @calc_results = CalcResult.joins(:meet, :result)
                       .select('meets.name as meet_name, meets.date as meet_date, ' +
-                              'meets.id as meet_id', +
+                              'meets.id as meet_id, ' +
                               'results.course as course, results.length as length, ' +
                               'results.climb as climb, results.float_time as time, ' +
                               'results.classifier as cassifier, results.place as place, ' +

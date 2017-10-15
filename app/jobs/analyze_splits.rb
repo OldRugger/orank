@@ -22,7 +22,6 @@ class AnalyzeSplits
   end
   
   def set_place_for_splits
-    puts "set_place_for_splits"
     split_runners = SplitRunner.where(split_course_id: @split_course.id)
                       .where.not(start_punch: nil).all.pluck(:id)
     set_place_for_split_time(split_runners)
@@ -30,7 +29,6 @@ class AnalyzeSplits
   end
   
   def set_place_for_split_time(split_runners)
-    puts "set_place_for_splits #{split_runners}"
     @split_course.controls.times do |i|
       @splits = Split.where(split_runner_id: split_runners, control: i+1).order(:time)
       last_time = nil
@@ -86,21 +84,17 @@ class AnalyzeSplits
   end
   
   def process_split_course(course)
-    puts "process_split_course"
     controls = @split_course.controls
-    puts "controls #{controls}"
     build_baselines(controls)
     calculate_split_results
   end
   
   def build_baselines(controls)
-    puts "build_baselines"
     control_splits = get_splits_by_control(controls)
     build_super_heroes(control_splits, controls)
   end
 
   def build_super_heroes(control_splits, controls)
-    puts "build_super_heroes"
     super_time = 0.0
     bat_time = 0.0
     superman = Runner.find_or_create_by(surname: 'Admin', firstname: 'Superman')
@@ -141,7 +135,6 @@ class AnalyzeSplits
 
   
   def get_splits_by_control(controls)
-    puts 'get_splits_by_control'
     control_splits = Hash.new
     splits = SplitRunner.joins(:splits)
                 .select('splits.control, splits.time')
@@ -159,7 +152,6 @@ class AnalyzeSplits
   end
   
   def calculate_split_results
-    puts 'calculate_split_results'
     batman = Runner.where(surname: 'Admin', firstname: 'Batman').first
     bat_runner = SplitRunner.where(runner_id: batman.id, split_course_id: @split_course.id).first
     batman_splits = Hash.new

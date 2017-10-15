@@ -28,12 +28,6 @@ class Runner < ActiveRecord::Base
     end
   end
 
-  private_class_method def self.update_card_id(runner, card_id)
-    runner.card_id = card_id
-    runner.save
-    runner
-  end
-  
   private_class_method def self.create_runner(row, file_type)
     if file_type == 'OE0014'
       return create_runner_oe00014(row)
@@ -58,6 +52,7 @@ class Runner < ActiveRecord::Base
     runner = Runner.new(surname: row['Surname'],
                         firstname: row['First name'],
                         sex: row['S'],
+                        card_id: row['SI card'],
                         club_description: row['City'])
     logger.info("runner #{runner.firstname} #{runner.surname} #{runner.sex} added to database - OR")
     runner.save
