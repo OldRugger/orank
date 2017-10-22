@@ -2,6 +2,7 @@ class CalcRunsController < ApplicationController
   def index
     @calc_runs = CalcRun.where(publish: true).all.order(id: :desc)
     @news = News.where(publish: true).all.order(id: :desc)
+    @links = Link.where(publish: true).order(:label)
   end
 
   def show
