@@ -4,6 +4,7 @@
     <tr>
       <th class=calc >Rankings Run Date</th>
       <th class=news >News</th>
+      <th class=links>Links</th>
    </tr>
   </table>
   <hr>
@@ -21,17 +22,27 @@
         <tr><td><br><a target="_blank"  href="http://gaoc-rankings.org/">Version 1 Rankings<br>Pre 6/2017</a>
       </table
      </td>
-     <td>
-      <table class=news >
+     <td class=news>
+      <table>
         <% @news.each do |news_item| %>
           <tr>
-            <td class=date >
-              <%= news_item.date %>
-            </td>
-            <td>
-              <%= sanitize(news_item.text) %>
+           <td>
+              <b><i><%= news_item.date %></i></b> - <%= sanitize(news_item.text) %>
             </td>
           <tr>
+        <% end %>
+      </table
+     </td>
+     <td class=links>
+      <table  >
+        <tr>
+           <td><b><%= link_to 'Georgia Orienteeering Club', 'http://www.gaorienteering.org/' %>
+        </tr>
+        <tr>
+          <td><b><%= link_to 'GAOC Splits', split_course_index_path %></b><br><br></td>
+        </tr>
+        <% @links.each do |link| %>
+          <tr><td><%= link_to link.label, link.url %></td></tr>
         <% end %>
       </table
      </td>
