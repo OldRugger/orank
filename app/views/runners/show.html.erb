@@ -86,9 +86,33 @@
             </tr>
             <% data["#{r.meet_name}(#{r.course[0]}) #{Date::ABBR_MONTHNAMES[r.meet_date[5..6].to_i]}"] = (r.time/r.length)  %>
           <% end %>
-          <tr><td colspan = 8 >
-             <%= line_chart data,  title: "Pace" %>
-          </td><tr>
+          <tr>
+            <td colspan = 8 >
+              <%= line_chart data,  title: "Pace" %>
+            </td>
+          <tr>
+          <tr>
+            <% season = nil %>
+            <td colspan = 8 >
+              <% count = 0 %>
+              <% @badges.each do |b| %>
+                <% season = b.season if season == nil %>
+                <% if season != b.season  %>
+                  <% season = b.season %>
+                  </td></tr>
+                  <tr><td colspan = 8 >
+                <% end %>
+                  <div class = "round <%= b.class_type.downcase %>">
+                    <span  title = "<%= b.text %>" >
+                      <span class="season <%= b.class_type.downcase %>"><%= b.season %></span>
+                        <span class="badge <%= b.class_type.downcase %> <%=b.badge_type.downcase %>">
+                           <span class="letter <%= b.class_type.downcase %> <%= b.badge_type.downcase %>"><%= b.value %></span>
+                        </span>
+                    </span>
+                  </div>
+              <% end %>
+            </td>
+          </tr>
         </table>
       </td>
     </tr>
