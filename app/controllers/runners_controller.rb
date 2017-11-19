@@ -10,8 +10,10 @@ class RunnersController < ApplicationController
                               'results.classifier as cassifier, results.place as place, ' +
                               'calc_results.score as score')
                         .where(calc_run_id: @calc_run.id, runner_id: @runner.id)
-                          .order('meets.date')
+                          .order('meets.date desc')
     @rankings = RunnerGv.select('course, score, races')
                   .where(calc_run_id: @calc_run.id, runner_id: @runner.id)
+    @badges = Badge.where(runner_id: @runner.id).order(season: :desc).order(:sort)
+    
   end
 end
