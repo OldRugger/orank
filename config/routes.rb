@@ -23,4 +23,6 @@ Rails.application.routes.draw do
   
   root :to => "calc_runs#index"
   
+  post 'badges' => 'badges#create'
+
 end
