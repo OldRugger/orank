@@ -5,7 +5,8 @@
   table {
     width: 100%;
     margin-top: 5px;
-   th {
+    border-collapse: collapse;
+  th {
       background-color: #A6BA65;
     }
   }
@@ -163,4 +164,22 @@
   -webkit-border-radius: 25px;
   border-radius:         25px;
 }
-
+.index {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.firstname {
+  width: 15%;
+}
+.surname {
+  width: 15%;
+}
+.club {
+  width: 15%;
+}
+.level {
+  text-align: center;
+}
+.races {
+  text-align: center;
+}
