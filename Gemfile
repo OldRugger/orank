@@ -13,6 +13,8 @@ gem 'sucker_punch'
 gem 'turbolinks'
 gem 'uglifier', '>= 1.3.0'
 gem 'unicorn'
+gem 'kaminari'
+gem 'ransack'
 
 group :development, :test do
   gem 'pry-nav'
@@ -24,7 +26,6 @@ group :development do
   gem 'brakeman', require: false
   gem 'bullet'
   gem 'rack-mini-profiler'
-  gem 'rubocop', require: false
   gem 'rubycritic', require: false
   gem 'traceroute'
   gem 'web-console', '~> 2.0'
