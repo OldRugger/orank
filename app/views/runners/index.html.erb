@@ -1,0 +1,68 @@
+<div class="runner index">
+  <div id=runners>
+    <br>
+    <%= search_form_for @search do |f| %>
+      <span class="field">
+        <%= f.label :firstname_cont, "First name" %>
+        <%= f.text_field :firstname_cont %>
+      </span>
+      <span class="field">
+        <%= f.label :surname_cont, "Last name" %>
+        <%= f.text_field :surname_cont %>
+      </span>
+      <span class="field">
+        <%= f.label :club_description_cont, "Club" %>
+        <%= f.text_field :club_description_cont %>
+      </span>
+      <span class="actions"><%= f.submit "Search" %></span>
+    <% end %>
+    <table border=1>
+      <thead>
+        <tr class="runnerHeader">
+          <th class="firstname" rowspan="3"><%= sort_link @search, :firstname, "First" %></th>
+          <th class="surname" rowspan="3"><%= sort_link @search, :surname, "Last" %></th>
+          <th class="club" rowspan="3"><%= sort_link @search, :club_description, "Club" %></th>
+          <th colspan="11">Stats for the 17/18 season</th>
+        </tr>
+        <tr>
+          <th rowspan="2">Level</th>
+          <th colspan="5">Races</th>
+          <th colspan="5">Medals</th>
+        </tr>
+        <tr>
+          <th>R</th>
+          <th>G</th>
+          <th>B</th>
+          <th>O</th>
+          <th>Y</th>
+          <th>R</th>
+          <th>G</th>
+          <th>B</th>
+          <th>O</th>
+          <th>Y</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @runners_as_json.each do |runner| %>
+          <tr>
+            <td><%= link_to runner['firstname'], runners_show_path(id: runner['id']) %></td>
+            <td><%= link_to runner['surname'], runners_show_path(id: runner['id']) %></td>
+            <td><%= runner['club_description'] %></td>
+            <td class=level><%= runner['level'] %></td>
+            <td class=races><%= runner['Red_races'] %></td>
+            <td class=races><%= runner['Green_races'] %></td>
+            <td class=races><%= runner['Brown_races'] %></td>
+            <td class=races><%= runner['Orange_races'] %></td>
+            <td class=races><%= runner['Yellow_races'] %></td>
+            <td class=races><%= runner['Red_medals'] %></td>
+            <td class=races><%= runner['Green_medals'] %></td>
+            <td class=races><%= runner['Brown_medals'] %></td>
+            <td class=races><%= runner['Orange_medals'] %></td>
+            <td class=races><%= runner['Yellow_medals'] %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <%= paginate @runners %>
+  </div>
+</div>

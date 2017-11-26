@@ -11,6 +11,8 @@ Rails.application.routes.draw do
   get 'power_ranking/show'
 
   get 'runners/show'
+  
+  get 'runners' => 'runners#index'
 
   resources :meets
   resources :calc_runs
