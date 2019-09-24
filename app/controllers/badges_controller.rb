@@ -111,7 +111,6 @@ class BadgesController < ApplicationController
       pace = r.float_time/r.length
       count +=1 if pace < standard
       if count >= 2
-        binding.pry
         create_pathfinder(runner)
         return true
       end
