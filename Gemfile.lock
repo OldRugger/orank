@@ -57,7 +57,7 @@ GEM
       activemodel (>= 4.0.0)
       activesupport (>= 4.0.0)
       mime-types (>= 1.16)
-    chartkick (2.2.4)
+    chartkick (3.2.0)
     codeclimate-engine-rb (0.4.0)
       virtus (~> 1.0)
     coderay (1.1.1)
