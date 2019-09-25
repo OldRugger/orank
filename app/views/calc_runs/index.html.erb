@@ -33,7 +33,7 @@
       </table
      </td>
      <td class=links>
-      <table  >
+      <table >
         <tr><td><b><%= link_to 'Find Runner', runners_path %></b><br><br></td></tr>
         <tr>
            <td><b><%= link_to 'Georgia Orienteeering Club', 'http://www.gaorienteering.org/' %>
@@ -41,6 +41,27 @@
         <tr>
           <td><b><%= link_to 'GAOC Splits', split_course_index_path %></b><br><br></td>
         </tr>
+       
+        <% season = get_season_by_date(Time.now) %>
+        <% badge_types = ["Expert", "Pathfinder", "Navigator" ] %>
+        <% if Badge.where(class_type: badge_types, season: season).count > 0 %>
+          <tr><td><b><%= season %> Performance Badges 
+          <table >
+          <% badge_types.each do |type| %>
+            <% badges = Badge.where(class_type: type, season: season) %>
+            <% if badges.count > 0 %>
+              <tr><td class=badges ><b><i><%= type%></i></b><td><tr>
+              <% badges.each do |b| %>
+                <% runner = Runner.find(b.runner_id) %>
+                <tr><td><%= link_to runner.name, runners_show_path(:id => runner.id) %> <i></i></td></tr>
+              <% end %>
+            <% end %>
+          <% end %>
+          </table>
+          </b><td><tr>
+        <% end %>
+
+        <tr><td><br>  ---- External Links ----  </td></tr>
         <% @links.each do |link| %>
           <tr><td><%= link_to link.label, link.url %></td></tr>
         <% end %>
