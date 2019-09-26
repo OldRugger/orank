@@ -45,15 +45,15 @@
         <% season = get_season_by_date(Time.now) %>
         <% badge_types = ["Expert", "Pathfinder", "Navigator" ] %>
         <% if Badge.where(class_type: badge_types, season: season).count > 0 %>
-          <tr><td><b><%= season %> Performance Badges 
+          <tr><td><b>"<%= season %>" Season Performance Badges 
           <table >
           <% badge_types.each do |type| %>
             <% badges = Badge.where(class_type: type, season: season) %>
             <% if badges.count > 0 %>
-              <tr><td class=badges ><b><i><%= type%></i></b><td><tr>
+              <tr><td class=badges ><%= type%><td><tr>
               <% badges.each do |b| %>
                 <% runner = Runner.find(b.runner_id) %>
-                <tr><td><%= link_to runner.name, runners_show_path(:id => runner.id) %> <i></i></td></tr>
+                <tr><td><%= link_to runner.name, runners_show_path(:id => runner.id) %></td></tr>
               <% end %>
             <% end %>
           <% end %>
