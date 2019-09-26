@@ -1,3 +1,6 @@
+require "#{Rails.root}/app/helpers/application_helper"
+include ApplicationHelper
+
 # Runner - individual runner record
 class Runner < ActiveRecord::Base
   def self.get_runner(row, file_type)
@@ -20,7 +23,7 @@ class Runner < ActiveRecord::Base
   end
    
   def decorate_with_activity(json)
-    season = APP_CONFIG[:season]
+    season = get_season_by_date(Time.now)
     badges = Badge.where(runner_id: json['id'], season: season)
     badge = badges.where(badge_type: "performance").first
     level = badge ? badge.class_type : ""
