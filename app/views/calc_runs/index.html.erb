@@ -45,7 +45,7 @@
         <% season = get_season_by_date(Time.now) %>
         <% badge_types = ["Expert", "Pathfinder", "Navigator" ] %>
         <% if Badge.where(class_type: badge_types, season: season).count > 0 %>
-          <tr><td><b>"<%= season %>" Season Performance Badges 
+          <tr><td><b>"<%= season %>" Season <br>Performance Badges 
           <table >
           <% badge_types.each do |type| %>
             <% badges = Badge.where(class_type: type, season: season) %>
