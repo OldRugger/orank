@@ -27,4 +27,7 @@ Rails.application.routes.draw do
   
   post 'badges' => 'badges#create'
 
+  post 'calc_runs/publish' => 'calc_runs#publish'
+  post 'calc_runs/unpublish' => 'calc_runs#unpublish'
+
 end

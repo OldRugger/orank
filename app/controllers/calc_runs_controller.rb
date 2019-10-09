@@ -92,4 +92,14 @@ class CalcRunsController < ApplicationController
     end
     redirect_to controller: 'admin', action: 'index'
   end
+
+  def publish 
+    CalcRun.find(params[:id]).update(publish: true)
+    redirect_to controller: 'admin', action: 'index'
+  end
+  
+  def unpublish
+    CalcRun.find(params[:id]).update(publish: false)
+    redirect_to controller: 'admin', action: 'index'
+  end
 end

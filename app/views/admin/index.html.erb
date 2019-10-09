@@ -21,7 +21,7 @@
 <tr>
   <td>
     <table>
-      <tr><th>ID</th><th>Run Date</th><th>Status</th><th>Published?</th><th>Calc Time</th></tr>
+      <tr><th>ID</th><th>Run Date</th><th>Status</th><th>Published?</th><th>Calc Time</th><th></th></tr>
       <% @calc_runs.each do |calc_run| %>
         <tr>
           <td><%= calc_run.id %></td>
@@ -29,6 +29,12 @@
           <td><%= calc_run.status %></td>
           <td><%= calc_run.publish || 'no' %></td>
           <td><%= calc_run.calc_time  %></td>
+          <% if calc_run.publish == 1 %>
+            <td><%= button_to "unpublish", calc_runs_unpublish_path({id: calc_run.id})%></td>
+          <% else %>
+            <td><%= button_to "publish", calc_runs_publish_path({id: calc_run.id})%></td>
+          <% end %>
+        </tr>
       <% end %>
     </table>
   </td>
