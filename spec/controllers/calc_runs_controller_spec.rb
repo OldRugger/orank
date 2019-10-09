@@ -88,4 +88,28 @@ RSpec.describe CalcRunsController, type: :controller do
       expect(response.body).to include('redirected')
     end
   end
+
+  describe 'publish calc run ' do
+    it 'should change publish to true and redirect' do
+      calc_run = CalcRun.last
+      calc_run.publish = false
+      calc_run.save
+      post :publish, {id: calc_run.id}
+      calc_run = CalcRun.last
+      expect(calc_run.publish).to equal(1)
+      expect(response.body).to include('redirected')
+    end
+  end  
+  
+  describe 'unpublish calc run ' do
+    it 'should change publish to false and redirect' do
+      calc_run = CalcRun.last
+      calc_run.publish = true
+      calc_run.save
+      post :unpublish, {id: calc_run.id}
+      calc_run = CalcRun.last
+      expect(calc_run.publish).to equal(0)
+      expect(response.body).to include('redirected')
+    end
+  end
 end
