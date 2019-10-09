@@ -21,7 +21,7 @@ class SplitCourseController < ApplicationController
   def show
     @split_course = SplitCourse.find(params[:id])
     @meet = Meet.find(@split_course.meet_id)
-    @runner_splits = SplitRunner.where(split_course_id: @split_course.id)
+    @runner_splits = SplitRunner.where(split_course_id: @split_course.id).order(:place)
   end
   
   def show_runner

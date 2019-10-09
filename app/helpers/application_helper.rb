@@ -26,4 +26,17 @@ module ApplicationHelper
     end
   end
 
+  def get_seasons_list
+    # Orienteering season runs from September to May
+    end_year = (Date.today + 6.months).year - 2000
+    start_year = end_year - 1
+    ["#{start_year}/#{end_year}", "#{start_year-1}/#{end_year-1}"]
+  end
+
+  def get_season_by_date(time)
+    end_year = (time + 6.months).year - 2000
+    start_year = end_year - 1
+    "#{start_year}/#{end_year}"
+  end
+
 end
