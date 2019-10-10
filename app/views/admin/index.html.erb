@@ -27,7 +27,7 @@
           <td><%= calc_run.id %></td>
           <td><%= calc_run.date %></td>
           <td><%= calc_run.status %></td>
-          <td><%= calc_run.publish || 'no' %></td>
+          <td><%= calc_run.publish || '0' %></td>
           <td><%= calc_run.calc_time  %></td>
           <% if calc_run.publish == 1 %>
             <td><%= button_to "unpublish", calc_runs_unpublish_path({id: calc_run.id})%></td>
@@ -39,8 +39,22 @@
     </table>
   </td>
   <td>
-    <table>
-      <tr><th>ID</th><th>Creation Date</th><th>Published?</th><th>Publish Date</th></tr>
+    <table class=news>
+      <tr><th>ID</th><th>Text</th><th>Creation Date</th><th>Published?</th><th></th></tr>
+      <% @news.each do |news| %>
+        <tr>
+          <td><%= news.id %></td>
+          <td><%= news.text[0...30] %>...</td>
+          <td><%= news.date %></td>
+          <td><%= news.publish || '0' %></td>
+          <% if news.publish == true || news.publish == 1 %>
+            <td><%= button_to "unpublish", news_unpublish_path({id: news.id})%></td>
+          <% else %>
+            <td><%= button_to "publish", news_publish_path({id: news.id}) %></td>
+          <% end %>
+
+        </tr>
+      <% end %>
     </table>
   </td>
 </table>

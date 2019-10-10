@@ -30,4 +30,7 @@ Rails.application.routes.draw do
   post 'calc_runs/publish' => 'calc_runs#publish'
   post 'calc_runs/unpublish' => 'calc_runs#unpublish'
 
+  post 'news/publish' => 'news#publish'
+  post 'news/unpublish' => 'news#unpublish'
+
 end
