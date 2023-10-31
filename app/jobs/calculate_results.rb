@@ -3,6 +3,7 @@ class CalculateResults
   
   def perform(calc_run)
     Rails.logger.info("*********** Calc run ***************")
+    puts "*********** Calc run ***************"
     @calc_run_id = calc_run.id
     calc_results("Sprint")
     calc_results("Yellow")
@@ -13,6 +14,7 @@ class CalculateResults
     normalize_scores
     create_power_rankings
     Rails.logger.info("--> calc run complete <---")
+    puts "--> calc run complete <---"
   end
   
   private
@@ -20,6 +22,8 @@ class CalculateResults
   def calc_results(course)
     #Process course until average calculation delta drops below 0.5 or we exceed 15 passes
     Rails.logger.info("Calculate results:  Calc id: #{@calc_run_id} - #{course}")
+    puts "Calculate results:  Calc id: #{@calc_run_id} - #{course}"
+
     init_globals(course)
     delta = 99.5 # init delta to high value.
     pass  = 0
@@ -49,7 +53,6 @@ class CalculateResults
 
   # calculate race / course garliness factor
   def calc_race_gv(course)
-    # Rails.logger.info("Process course #{course}")
     total_delta = 0.0
     meet_cnt    = 0
     meets       = get_meets
@@ -88,7 +91,6 @@ class CalculateResults
     score_list   = []
     results = get_course_results(meet_id,course)
     results.each do |result|
-      # if valid result
       if result.classifier == 0
         runner_gv    = get_runner_gv(result,course,meet_id)
         score_list   << (result.float_time * runner_gv)
@@ -104,7 +106,6 @@ class CalculateResults
   def update_meet_course_results(meet_id, results, course_cgv, course, runner_times)
     first_time = true
     delta      = 1.0
-
     runner_times.each do |runner|
       time  = runner.runner_time
       runner_score = course_cgv/time
@@ -121,7 +122,8 @@ class CalculateResults
                                      course: course,
                                      float_time: time,
                                      score: runner_score,
-                                     course_cgv: course_cgv,)
+                                     course_cgv: course_cgv)
+        calc_result.save!
       else
         if first_time
           delta = ((course_cgv - calc_result.course_cgv) / calc_result.course_cgv) * 100
@@ -196,10 +198,10 @@ class CalculateResults
     if @update_db == false
       @c_runner_gv[runner_id] = {cgv: cgv_score, score: ranking_score, races: races}
     else
-      RunnerGv.find_or_initialize_by(runner_id: runner_id,
+      runner = RunnerGv.create_or_find_by(runner_id: runner_id,
                                      calc_run_id: @calc_run_id,
                                      course: @course)
-              .update_attributes!(cgv: cgv_score, score: ranking_score, races: races)
+      runner.update!(cgv: cgv_score, score: ranking_score, races: races)
     end
   end
   

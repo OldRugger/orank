@@ -1,4 +1,4 @@
-class CreateSplitCourses < ActiveRecord::Migration
+class CreateSplitCourses < ActiveRecord::Migration[4.2]
   def change
     create_table :split_courses do |t|
       t.references :meet, index: true, foreign_key: true

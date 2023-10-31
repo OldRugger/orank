@@ -3,16 +3,16 @@ require 'rails_helper'
 RSpec.describe CalcRunsController, type: :controller do
   before do
     meet = Meet.create(name: 'test meet OE0014 A',
-                date: Time.now.strftime('%m/%d/%Y'))
+                date: Time.now)
     Result.import(meet.id,fixture_file_upload('test_data/OE0014.csv'))
     meet = Meet.create(name: 'test meet OE0014 B',
-                date: Time.now.strftime('%m/%d/%Y'))
+                date: Time.now)
     Result.import(meet.id, fixture_file_upload('test_data/OE0014.csv'))
     meet = Meet.create(name: 'test meet Or A',
-                date: Time.now.strftime('%m/%d/%Y'))
+                date: Time.now)
     Result.import(meet.id, fixture_file_upload('test_data/OR.csv'))
     meet = Meet.create(name: 'test meet Or B',
-                date: Time.now.strftime('%m/%d/%Y'))
+                date: Time.now)
     Result.import(meet.id, fixture_file_upload('test_data/OR.csv'))
     calc_run = CalcRun.new(status: 'in-process', date: DateTime.now.to_date )
     calc_run.save
@@ -63,7 +63,7 @@ RSpec.describe CalcRunsController, type: :controller do
   describe 'GET #show calc_run' do
     it "should return calc run" do
       calc_run = CalcRun.last
-      get :show, id: calc_run.id
+      get :show, params: { id: calc_run.id }
       expect(assigns(:runners)).to match RunnerGv.joins(:runner)
                          .select('runner_gvs.id, runner_gvs.score, runner_gvs.races, ' +
                                  'runners.firstname, runners.surname, runners.id as runner_id, ' +
@@ -77,7 +77,7 @@ RSpec.describe CalcRunsController, type: :controller do
   describe 'GET #show_all to return calc details' do
     it "should do something I'm sure" do
       calc_run = CalcRun.last
-      get :show_all, id: calc_run.id
+      get :show_all, params: { id: calc_run.id }
       expect(assigns(:calc_details).last.float_time).to eql 75.53333333333333
     end
   end
@@ -85,7 +85,7 @@ RSpec.describe CalcRunsController, type: :controller do
   describe 'PUT create call run' do
     it "should redirect to admin index" do
       put :create
-      expect(response.body).to include('redirected')
+      expect(response.redirection?).to be_truthy
     end
   end
 
@@ -94,10 +94,10 @@ RSpec.describe CalcRunsController, type: :controller do
       calc_run = CalcRun.last
       calc_run.publish = false
       calc_run.save
-      post :publish, {id: calc_run.id}
+      post :publish, params: { id: calc_run.id }
       calc_run = CalcRun.last
       expect(calc_run.publish).to equal(1)
-      expect(response.body).to include('redirected')
+      expect(response.redirection?).to be_truthy
     end
   end  
   
@@ -106,10 +106,10 @@ RSpec.describe CalcRunsController, type: :controller do
       calc_run = CalcRun.last
       calc_run.publish = true
       calc_run.save
-      post :unpublish, {id: calc_run.id}
+      post :unpublish, params: { id: calc_run.id }
       calc_run = CalcRun.last
       expect(calc_run.publish).to equal(0)
-      expect(response.body).to include('redirected')
+      expect(response.redirection?).to be_truthy
     end
   end
 end

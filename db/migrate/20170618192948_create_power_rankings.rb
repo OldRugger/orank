@@ -1,4 +1,4 @@
-class CreatePowerRankings < ActiveRecord::Migration
+class CreatePowerRankings < ActiveRecord::Migration[4.2]
   def change
     create_table :power_rankings do |t|
       t.string :school

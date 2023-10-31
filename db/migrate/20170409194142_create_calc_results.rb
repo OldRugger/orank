@@ -1,4 +1,4 @@
-class CreateCalcResults < ActiveRecord::Migration
+class CreateCalcResults < ActiveRecord::Migration[4.2]
   def change
     create_table :calc_results do |t|
       t.float :float_time

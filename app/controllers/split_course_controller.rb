@@ -1,7 +1,7 @@
 class SplitCourseController < ApplicationController
   def index
     @split_courses = SplitCourse.all.order(meet_id: :desc)
-                            .order("case course
+                            .order(Arel.sql("case course
                                       when 'White'    then 8
                                       when 'Sprint'   then 7
                                       when 'Yellow'   then 5
@@ -15,7 +15,7 @@ class SplitCourseController < ApplicationController
                                       when 'Red'      then 1
                                       when 'Blue'     then 0
                                       else 0
-                                    end ")
+                                    end "))
   end
 
   def show

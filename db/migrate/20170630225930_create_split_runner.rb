@@ -1,4 +1,4 @@
-class CreateSplitRunner < ActiveRecord::Migration
+class CreateSplitRunner < ActiveRecord::Migration[4.2]
   def change
     create_table :split_runners do |t|
       t.references :split_course, index: true, foreign_key: true

@@ -1,4 +1,4 @@
-class CreateSplits < ActiveRecord::Migration
+class CreateSplits < ActiveRecord::Migration[4.2]
   def change
     create_table :splits do |t|
       t.references :split_runner, index: true, foreign_key: true

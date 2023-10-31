@@ -13,10 +13,10 @@ RSpec.describe NewsController, type: :controller do
           news = News.last
           news.publish = false
           news.save
-          post :publish, {id: news.id}
+          post :publish, params: { id: news.id }
           news = News.last
           expect(news.publish).to equal(true)
-          expect(response.body).to include('redirected')
+          expect(response.redirection?).to be_truthy
         end
       end  
       
@@ -25,10 +25,10 @@ RSpec.describe NewsController, type: :controller do
           news = News.last
           news.publish = true
           news.save
-          post :unpublish, {id: news.id}
+          post :unpublish, params: { id: news.id }
           news = News.last
           expect(news.publish).to equal(false)
-          expect(response.body).to include('redirected')
+          expect(response.redirection?).to be_truthy
         end
       end
     

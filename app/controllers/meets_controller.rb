@@ -1,6 +1,6 @@
 # Meets controller
 class MeetsController < ApplicationController
-  before_filter :admin_required, only: %i(edit new)
+  before_action :admin_required, only: %i(edit new)
 
   def show
     @meet = Meet.find(params[:id])

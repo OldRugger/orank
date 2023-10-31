@@ -1,4 +1,4 @@
-class CreateRunnerGvs < ActiveRecord::Migration
+class CreateRunnerGvs < ActiveRecord::Migration[4.2]
   def change
     create_table :runner_gvs do |t|
       t.string :course

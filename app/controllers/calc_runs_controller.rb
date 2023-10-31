@@ -42,7 +42,7 @@ class CalcRunsController < ApplicationController
                         .where('calc_results.calc_run_id = ?', @calc_run.id)
                           .group(:name, :date)
                             .order('meets.date DESC')
-                            
+
     @meet_id = @calc_results.first.meet_id if @meet_id == nil
     
     @calc_courses = CalcResult.joins(:meet)
@@ -51,7 +51,7 @@ class CalcRunsController < ApplicationController
                         .where('calc_results.calc_run_id = ? and meets.id = ?',
                                @calc_run.id, @meet_id)
                           .group(:course)
-                            .order("case course
+                            .order(Arel.sql("case course
                                       when 'Sprint' then 6
                                       when 'Yellow' then 5
                                       when 'Orange' then 4
@@ -59,7 +59,7 @@ class CalcRunsController < ApplicationController
                                       when 'Green'  then 2
                                       when  'Red'   then 1
                                       else 0
-                                    end ")
+                                    end "))
                                     
     @calc_details = CalcResult.joins(:meet, :runner, :result)
                       .select('calc_results.course, length, results.climb as climb, controls, course_cgv, ' +
@@ -67,7 +67,7 @@ class CalcRunsController < ApplicationController
                               'club_description, calc_results.float_time, score')
                         .where('calc_results.calc_run_id = ? and meets.id = ?',
                                @calc_run.id, @meet_id)
-                          .order("case calc_results.course
+                          .order(Arel.sql("case calc_results.course
                                     when 'Sprint' then 6
                                     when 'Yellow' then 5
                                     when 'Orange' then 4
@@ -75,7 +75,7 @@ class CalcRunsController < ApplicationController
                                     when 'Green'  then 2
                                     when  'Red'   then 1
                                     else 0
-                                  end ")
+                                  end "))
     @split_courses = SplitCourse.where(meet_id: @meet_id).all
   end
   

@@ -26,9 +26,10 @@ RSpec.describe MeetsController, type: :controller do
   describe 'Upload OE0014 extract data file' do
     context 'add meet results ' do
       before do
-        post :create, meet: { name: 'test meet OE0014',
-                              date: Time.now.strftime('%m/%d/%Y'),
-                              input_file: fixture_file_upload('test_data/OE0014.csv') }
+        post :create, params: { meet: { name: 'test meet OE0014',
+                                        date: Time.now.strftime('%m/%d/%Y'),
+                                        input_file: fixture_file_upload('test_data/OE0014.csv') }
+                              }
       end
       it 'should add add row to meet table' do
         original_filename = Meet.where(original_filename: 'OE0014.csv').first.original_filename
@@ -46,9 +47,10 @@ RSpec.describe MeetsController, type: :controller do
   describe 'Upload OR extract data file' do
     context 'add meet results ' do
       before do
-        post :create, meet: { name: 'test meet OR',
-                              date: Time.now.strftime('%m/%d/%Y'),
-                              input_file: fixture_file_upload('test_data/OR.csv') }
+        post :create, params: { meet: { name: 'test meet OR',
+                                        date: Time.now.strftime('%m/%d/%Y'),
+                                        input_file: fixture_file_upload('test_data/OR.csv') }
+                              }
       end
       it 'should add add row to meet table' do
         original_filename = Meet.where(original_filename: 'OR.csv').first.original_filename

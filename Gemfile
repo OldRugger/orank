@@ -5,21 +5,21 @@ gem 'carrierwave'
 gem 'chartkick'
 gem 'jquery-rails'
 gem 'lru_redux'
-gem 'rails', '4.2.11.1'
-gem 'sass-rails', '~> 5.0'
-gem 'sdoc', '~> 0.4.0', group: :doc
-gem "sqlite3", '~> 1.3.6'
+gem 'rails'
+gem 'sass-rails'
+gem 'sdoc', '2.6.1', group: :doc
+gem "sqlite3"
 gem 'sucker_punch'
 gem 'turbolinks'
-gem 'uglifier', '>= 1.3.0'
+gem 'uglifier'
 gem 'unicorn'
 gem 'kaminari'
 gem 'ransack'
 
 group :development, :test do
-  gem 'pry-nav'
-  gem 'pry-rails'
-  gem 'rspec-rails', '~> 3.5'
+  gem 'rails-controller-testing'
+  gem 'debug'
+  gem 'rspec-rails'
 end
 
 group :development do
@@ -28,7 +28,7 @@ group :development do
   gem 'rack-mini-profiler'
   gem 'rubycritic', require: false
   gem 'traceroute'
-  gem 'web-console', '~> 2.0'
+  gem 'web-console'
 end
 
 gem 'simplecov', require: false, group: :test

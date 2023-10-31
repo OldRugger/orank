@@ -28,7 +28,7 @@ RSpec.describe PowerRankingController, type: :controller do
 
     it "returns http success" do
       calc_run = CalcRun.last
-      get :show, id: calc_run.id
+      get :show, params: { id: calc_run.id }
       expect(response).to have_http_status(:success)
     end
   end
